@@ -54,9 +54,13 @@ for i in [0, 2, 5, 7, 8, 9]:
         data['SSA_' + str(i) + str(k + 1)] = np.array(df)
 
 data['SSA_noise_550_9dBm_01'] = data['SSA_01'][250:430, 1].max()
+data['SSA_noise_550_9dBm_02'] = data['SSA_02'][250:430, 1].max()
 data['SSA_noise_150_9dBm_01'] = data['SSA_01'][:200, 1].max()
-data['SSA_noise_550_6dBm_21'] = data['SSA_01'][250:430, 1].max()
-data['SSA_noise_150_6dBm_21'] = data['SSA_01'][:200, 1].max()
+data['SSA_noise_150_9dBm_02'] = data['SSA_02'][:200, 1].max()
+data['SSA_noise_550_6dBm_21'] = data['SSA_21'][250:430, 1].max()
+data['SSA_noise_550_6dBm_22'] = data['SSA_22'][250:430, 1].max()
+data['SSA_noise_150_6dBm_21'] = data['SSA_21'][:200, 1].max()
+data['SSA_noise_150_6dBm_22'] = data['SSA_22'][:200, 1].max()
 for i in [0, 2, 5, 7, 8, 9]:
     for k in range(2):
         data['SNN_' + str(i) + str(k + 1)] = np.power(10, np.divide(data['SSA_' + str(i) + str(k + 1)][:, 1], 10))
@@ -68,11 +72,15 @@ for i in [7, 9]:
     for k in range(2):
         data['SSA_signal_150_' + str(i) + str(k + 1)] = data['SSA_' + str(i) + str(k + 1)].max()
 
-for k in range(2):
-    data['SNR_550_9dBm_5' + str(k + 1)] = data['SSA_signal_550_5' + str(k + 1)] - data['SSA_noise_550_9dBm_01']
-    data['SNR_150_9dBm_7' + str(k + 1)] = data['SSA_signal_150_7' + str(k + 1)] - data['SSA_noise_150_9dBm_01']
-    data['SNR_550_6dBm_8' + str(k + 1)] = data['SSA_signal_550_8' + str(k + 1)] - data['SSA_noise_550_6dBm_21']
-    data['SNR_150_6dBm_9' + str(k + 1)] = data['SSA_signal_150_9' + str(k + 1)] - data['SSA_noise_150_6dBm_21']
+
+data['SNR_550_9dBm_far'] = data['SSA_signal_550_51'] - data['SSA_noise_550_9dBm_01']
+data['SNR_550_9dBm_close'] = data['SSA_signal_550_52'] - data['SSA_noise_550_9dBm_02']
+data['SNR_150_9dBm_far'] = data['SSA_signal_150_71'] - data['SSA_noise_150_9dBm_01']
+data['SNR_150_9dBm_close'] = data['SSA_signal_150_72'] - data['SSA_noise_150_9dBm_02']
+data['SNR_550_6dBm_far'] = data['SSA_signal_550_81'] - data['SSA_noise_550_6dBm_21']
+data['SNR_550_6dBm_close'] = data['SSA_signal_550_82'] - data['SSA_noise_550_6dBm_22']
+data['SNR_150_6dBm_far'] = data['SSA_signal_150_91'] - data['SSA_noise_150_6dBm_21']
+data['SNR_150_6dBm_close'] = data['SSA_signal_150_92'] - data['SSA_noise_150_6dBm_22']
 # I guess this part is finished
 # data['signal' + str(k + 1)] = data['SSA_' + str(k + 1)][350:450, 1].max()
 # data['noise' + str(k + 1)] = data['SSA_' + str(k + 1)][350:450, 1].max()
@@ -113,32 +121,32 @@ for i in [2, 8, 9]:
 
 
 
-data['S21_01'] = np.divide(data['S21_01'], data['S21_01'][376])
-data['S21_02'] = np.divide(data['S21_02'], data['S21_02'][43])
-data['S21_21'] = np.divide(data['S21_21'], data['S21_21'][376])
-data['S21_22'] = np.divide(data['S21_22'], data['S21_22'][43])
+data['S21_01'] = np.divide(data['S21_01'][376], data['S21_01'])
+data['S21_02'] = np.divide(data['S21_02'][43], data['S21_02'])
+data['S21_21'] = np.divide(data['S21_21'][376], data['S21_21'])
+data['S21_22'] = np.divide(data['S21_22'][43], data['S21_22'])
 #This part is also finished
 
 ########################################################################################################################
 '''Calculate the Sensitivity in function of frequency'''
 
 data['Bmin_550_9dBm_far'] = np.sqrt(np.divide(data['SNN_51'], data['S21_01'])) * B_ref11
-data['Bmin_550_9dBm_close'] = np.sqrt(np.divide(data['SNN_52'], data['S21_02'])) * B_ref11
-data['Bmin_150_9dBm_far'] = np.sqrt(np.divide(data['SNN_71'], data['S21_01'])) * B_ref12
-data['Bmin_150_9dBm_close'] = np.sqrt(np.divide(data['SNN_72'], data['S21_02'])) * B_ref12
+data['Bmin_550_9dBm_close'] = np.sqrt(np.divide(data['SNN_52'], data['S21_21'])) * B_ref11
+data['Bmin_150_9dBm_far'] = np.sqrt(np.divide(data['SNN_71'], data['S21_02'])) * B_ref12
+data['Bmin_150_9dBm_close'] = np.sqrt(np.divide(data['SNN_72'], data['S21_22'])) * B_ref12
 data['Bmin_550_6dBm_far'] = np.sqrt(np.divide(data['SNN_81'], data['S21_21'])) * B_ref21
 data['Bmin_550_6dBm_close'] = np.sqrt(np.divide(data['SNN_82'], data['S21_22'])) * B_ref21
 data['Bmin_150_6dBm_far'] = np.sqrt(np.divide(data['SNN_91'], data['S21_21'])) * B_ref22
 data['Bmin_150_6dBm_close'] = np.sqrt(np.divide(data['SNN_92'], data['S21_22'])) * B_ref22
 
-data['Bmin_550_9dBm_far'] = np.multiply(np.divide(data['Bmin_550_9dBm_far'], np.sqrt(np.multiply(data['SNR_550_9dBm_51'], RBW))), 1e9)
-data['Bmin_550_9dBm_close'] = np.multiply(np.divide(data['Bmin_550_9dBm_close'], np.sqrt(np.multiply(data['SNR_550_9dBm_52'], RBW))), 1e9)
-data['Bmin_150_9dBm_far'] = np.multiply(np.divide(data['Bmin_150_9dBm_far'], np.sqrt(np.multiply(data['SNR_150_9dBm_71'], RBW))), 1e9)
-data['Bmin_150_9dBm_close'] = np.multiply(np.divide(data['Bmin_150_9dBm_close'], np.sqrt(np.multiply(data['SNR_150_9dBm_72'], RBW))), 1e9)
-data['Bmin_550_6dBm_far'] = np.multiply(np.divide(data['Bmin_550_6dBm_far'], np.sqrt(np.multiply(data['SNR_550_6dBm_81'], RBW))), 1e9)
-data['Bmin_550_6dBm_close'] = np.multiply(np.divide(data['Bmin_550_6dBm_close'], np.sqrt(np.multiply(data['SNR_550_6dBm_82'], RBW))), 1e9)
-data['Bmin_150_6dBm_far'] = np.multiply(np.divide(data['Bmin_150_6dBm_far'], np.sqrt(np.multiply(data['SNR_150_6dBm_91'], RBW))), 1e9)
-data['Bmin_150_6dBm_close'] = np.multiply(np.divide(data['Bmin_150_6dBm_close'], np.sqrt(np.multiply(data['SNR_150_6dBm_92'], RBW))), 1e9)
+data['Bmin_550_9dBm_far'] = np.multiply(np.divide(data['Bmin_550_9dBm_far'], np.sqrt(np.multiply(data['SNR_550_9dBm_far'], RBW))), 1e9)
+data['Bmin_550_9dBm_close'] = np.multiply(np.divide(data['Bmin_550_9dBm_close'], np.sqrt(np.multiply(data['SNR_550_9dBm_close'], RBW))), 1e9)
+data['Bmin_150_9dBm_far'] = np.multiply(np.divide(data['Bmin_150_9dBm_far'], np.sqrt(np.multiply(data['SNR_150_9dBm_far'], RBW))), 1e9)
+data['Bmin_150_9dBm_close'] = np.multiply(np.divide(data['Bmin_150_9dBm_close'], np.sqrt(np.multiply(data['SNR_150_9dBm_close'], RBW))), 1e9)
+data['Bmin_550_6dBm_far'] = np.multiply(np.divide(data['Bmin_550_6dBm_far'], np.sqrt(np.multiply(data['SNR_550_6dBm_far'], RBW))), 1e9)
+data['Bmin_550_6dBm_close'] = np.multiply(np.divide(data['Bmin_550_6dBm_close'], np.sqrt(np.multiply(data['SNR_550_6dBm_close'], RBW))), 1e9)
+data['Bmin_150_6dBm_far'] = np.multiply(np.divide(data['Bmin_150_6dBm_far'], np.sqrt(np.multiply(data['SNR_150_6dBm_far'], RBW))), 1e9)
+data['Bmin_150_6dBm_close'] = np.multiply(np.divide(data['Bmin_150_6dBm_close'], np.sqrt(np.multiply(data['SNR_150_6dBm_close'], RBW))), 1e9)
 
 data['Bmin_min_9dBm_far'] = data['Bmin_550_9dBm_far'].min()
 data['Bmin_min_550_9dBm_close'] = data['Bmin_550_9dBm_close'].min()
