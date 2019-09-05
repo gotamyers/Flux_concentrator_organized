@@ -2,12 +2,6 @@ import csv
 import math
 import numpy as np
 import pickle
-import matplotlib.pyplot as plt
-
-'''This script is used for reading, calculating and plotting absolute sentivity for the the data acquired on first week
- of August. We measured S21, SA noise and SA reference for 2 and 5 mm long flux concentrator in positions far and close
- to the magnetometer as well as for two different powers: 6 and 9 dBm + amplifier that has approximately 25 dB gain:
- 9 dBm = 630 mVrms; 6 dBm = 450 mVrms. With the amp, we have a output voltage of 11.2 Vrms and 5.66 Vrms'''
 
 data = {}
 
@@ -22,8 +16,11 @@ nu_ref1 = 550 * 1e3  # Func. gen. driving freq.
 nu_ref2 = 150 * 1e3  # Func. gen. driving freq.
 V_drive1 = math.sqrt(math.pow(10, 2.73) * 50 * math.pow(10, 0.9) * 1e-3)  # Voltage driven to the coil
 V_drive2 = math.sqrt(math.pow(10, 2.73) * 50 * math.pow(10, 0.6) * 1e-3)  # Voltage driven to the coil
+# V_drive1 = 10
+# V_drive2 = 4
 RBW = 30  # Resolution bandwidth
 I_driven11 = V_drive1 / math.sqrt(math.pow(R, 2) + math.pow((nu_ref1 * 2 * math.pi), 2) * math.pow(L, 2))  # Coils current
+# I_driven11 = I_driven12 = I_driven21 = I_driven22 = 0.473
 I_driven12 = V_drive1 / math.sqrt(math.pow(R, 2) + math.pow((nu_ref2 * 2 * math.pi), 2) * math.pow(L, 2))  # Coils current
 B_ref11 = math.pow(4.5, 1.5) * mu0 * Ncoils * I_driven11 / radius
 B_ref12 = math.pow(4.5, 1.5) * mu0 * Ncoils * I_driven12 / radius
@@ -36,10 +33,10 @@ B_ref22 = math.pow(4.5, 1.5) * mu0 * Ncoils * I_driven22 / radius
 '''Read Spectrum analyzer, find SNR and calculate S_NN in not dB'''
 for i in [0, 2, 5, 7, 8, 9]:
     for k in range(2):
-        with open('C:\\Users\\Fernando\\Documents\Phd\\9thAug'
-                  + '\\Absolute_sensitivity_090819_FG\\SSA_' + str(i) + str(k + 1) + '.csv') as a:
-        # with open('C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Sensitivity_calculations\\254_4\\9thAug'
+        # with open('C:\\Users\\Fernando\\Documents\Phd\\9thAug'
         #           + '\\Absolute_sensitivity_090819_FG\\SSA_' + str(i) + str(k + 1) + '.csv') as a:
+        with open('C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Sensitivity_calculations\\254_4\\9thAug'
+                  + '\\Absolute_sensitivity_090819_FG\\SSA_' + str(i) + str(k + 1) + '.csv') as a:
             df = csv.reader(a, delimiter=',')
             df_temp = []
             for row in df:
@@ -53,48 +50,78 @@ for i in [0, 2, 5, 7, 8, 9]:
 
         data['SSA_' + str(i) + str(k + 1)] = np.array(df)
 
-data['SSA_noise_550_9dBm_01'] = data['SSA_01'][250:430, 1].max()
-data['SSA_noise_550_9dBm_02'] = data['SSA_02'][250:430, 1].max()
-data['SSA_noise_150_9dBm_01'] = data['SSA_01'][:200, 1].max()
-data['SSA_noise_150_9dBm_02'] = data['SSA_02'][:200, 1].max()
-data['SSA_noise_550_6dBm_21'] = data['SSA_21'][250:430, 1].max()
-data['SSA_noise_550_6dBm_22'] = data['SSA_22'][250:430, 1].max()
-data['SSA_noise_150_6dBm_21'] = data['SSA_21'][:200, 1].max()
-data['SSA_noise_150_6dBm_22'] = data['SSA_22'][:200, 1].max()
-for i in [0, 2, 5, 7, 8, 9]:
-    for k in range(2):
-        data['SNN_' + str(i) + str(k + 1)] = np.power(10, np.divide(data['SSA_' + str(i) + str(k + 1)][:, 1], 10))
+'''Sensitivity for flux concentrator far, applying 9dBm drive with the NA'''
+data['SSA_noise_550_9dBm_far'] = data['SSA_01'][370:380, 1].max()
+data['SSA_noise_150_9dBm_far'] = data['SSA_01'][30:50, 1].max()
+data['SSA_ref_550_9dBm_far'] = data['SSA_51'][250:430, 1].max()
+data['SSA_ref_150_9dBm_far'] = data['SSA_71'][:200, 1].max()
 
-for i in [5, 8]:
-    for k in range(2):
-        data['SSA_signal_550_' + str(i) + str(k + 1)] = data['SSA_' + str(i) + str(k + 1)][:430, 1].max()
-for i in [7, 9]:
-    for k in range(2):
-        data['SSA_signal_150_' + str(i) + str(k + 1)] = data['SSA_' + str(i) + str(k + 1)].max()
+data['SNR_550_9dBm_far'] = np.power(10, np.divide(data['SSA_ref_550_9dBm_far'] - data['SSA_noise_550_9dBm_far'], 10))
+data['SNR_150_9dBm_far'] = np.power(10, np.divide(data['SSA_ref_150_9dBm_far'] - data['SSA_noise_150_9dBm_far'], 10))
 
+data['SNN_noise_9dBm_far'] = np.power(10., np.divide(data['SSA_01'][:, 1], 10.))
+data['SNN_550_9dBm_far'] = np.power(10., np.divide(data['SSA_51'][:, 1], 10.))
+data['SNN_150_9dBm_far'] = np.power(10., np.divide(data['SSA_71'][:, 1], 10.))
+data['SNN_noise_9dBm_far'] = np.divide(data['SNN_noise_9dBm_far'], data['SNN_noise_9dBm_far'][375])
+data['SNN_550_9dBm_far'] = np.divide(data['SNN_550_9dBm_far'], data['SNN_550_9dBm_far'][375])
+data['SNN_150_9dBm_far'] = np.divide(data['SNN_150_9dBm_far'], data['SNN_150_9dBm_far'][42])
 
-data['SNR_550_9dBm_far'] = data['SSA_signal_550_51'] - data['SSA_noise_550_9dBm_01']
-data['SNR_550_9dBm_close'] = data['SSA_signal_550_52'] - data['SSA_noise_550_9dBm_02']
-data['SNR_150_9dBm_far'] = data['SSA_signal_150_71'] - data['SSA_noise_150_9dBm_01']
-data['SNR_150_9dBm_close'] = data['SSA_signal_150_72'] - data['SSA_noise_150_9dBm_02']
-data['SNR_550_6dBm_far'] = data['SSA_signal_550_81'] - data['SSA_noise_550_6dBm_21']
-data['SNR_550_6dBm_close'] = data['SSA_signal_550_82'] - data['SSA_noise_550_6dBm_22']
-data['SNR_150_6dBm_far'] = data['SSA_signal_150_91'] - data['SSA_noise_150_6dBm_21']
-data['SNR_150_6dBm_close'] = data['SSA_signal_150_92'] - data['SSA_noise_150_6dBm_22']
-# I guess this part is finished
-# data['signal' + str(k + 1)] = data['SSA_' + str(k + 1)][350:450, 1].max()
-# data['noise' + str(k + 1)] = data['SSA_' + str(k + 1)][350:450, 1].max()
-# data['SNR' + str(k + 1)] = data['signal' + str(k + 1)] - data['noise' + str(k + 1)]
-# data['S_NN_' + str(k + 1)] = np.power(10, np.divide(data['SSA_' + str(k + 1)][:, 1], 10))
+'''Sensitivity for flux concentrator close, applying 9dBm drive with the NA'''
+data['SSA_noise_550_9dBm_close'] = data['SSA_02'][370:380, 1].max()
+data['SSA_noise_150_9dBm_close'] = data['SSA_02'][30:50, 1].max()
+data['SSA_ref_550_9dBm_close'] = data['SSA_52'][250:430, 1].max()
+data['SSA_ref_150_9dBm_close'] = data['SSA_72'][:200, 1].max()
+
+data['SNR_550_9dBm_close'] = np.power(10, np.divide(data['SSA_ref_550_9dBm_close'] - data['SSA_noise_550_9dBm_close'], 10))
+data['SNR_150_9dBm_close'] = np.power(10, np.divide(data['SSA_ref_150_9dBm_close'] - data['SSA_noise_150_9dBm_close'], 10))
+
+data['SNN_noise_9dBm_close'] = np.power(10., np.divide(data['SSA_02'][:, 1], 10.))
+data['SNN_550_9dBm_close'] = np.power(10., np.divide(data['SSA_52'][:, 1], 10.))
+data['SNN_150_9dBm_close'] = np.power(10., np.divide(data['SSA_72'][:, 1], 10.))
+data['SNN_noise_9dBm_close'] = np.divide(data['SNN_noise_9dBm_close'], data['SNN_noise_9dBm_close'][375])
+data['SNN_550_9dBm_close'] = np.divide(data['SNN_550_9dBm_close'], data['SNN_550_9dBm_close'][375])
+data['SNN_150_9dBm_close'] = np.divide(data['SNN_150_9dBm_close'], data['SNN_150_9dBm_close'][42])
+
+'''Sensitivity for flux concentrator far, applying 6dBm drive with the NA'''
+data['SSA_noise_550_6dBm_far'] = data['SSA_21'][370:380, 1].max()
+data['SSA_noise_150_6dBm_far'] = data['SSA_21'][30:50, 1].max()
+data['SSA_ref_550_6dBm_far'] = data['SSA_81'][250:430, 1].max()
+data['SSA_ref_150_6dBm_far'] = data['SSA_91'][:200, 1].max()
+
+data['SNR_550_6dBm_far'] = np.power(10, np.divide(data['SSA_ref_550_6dBm_far'] - data['SSA_noise_550_6dBm_far'], 10))
+data['SNR_150_6dBm_far'] = np.power(10, np.divide(data['SSA_ref_150_6dBm_far'] - data['SSA_noise_150_6dBm_far'], 10))
+
+data['SNN_noise_6dBm_far'] = np.power(10., np.divide(data['SSA_21'][:, 1], 10.))
+data['SNN_550_6dBm_far'] = np.power(10., np.divide(data['SSA_81'][:, 1], 10.))
+data['SNN_150_6dBm_far'] = np.power(10., np.divide(data['SSA_91'][:, 1], 10.))
+data['SNN_noise_6dBm_far'] = np.divide(data['SNN_noise_6dBm_far'], data['SNN_noise_6dBm_far'][375])
+data['SNN_550_6dBm_far'] = np.divide(data['SNN_550_6dBm_far'], data['SNN_550_6dBm_far'][375])
+data['SNN_150_6dBm_far'] = np.divide(data['SNN_150_6dBm_far'], data['SNN_150_6dBm_far'][42])
+
+'''Sensitivity for flux concentrator close, applying 9dBm drive with the NA'''
+data['SSA_noise_550_6dBm_close'] = data['SSA_22'][370:380, 1].max()
+data['SSA_noise_150_6dBm_close'] = data['SSA_22'][30:50, 1].max()
+data['SSA_ref_550_6dBm_close'] = data['SSA_82'][250:430, 1].max()
+data['SSA_ref_150_6dBm_close'] = data['SSA_92'][:200, 1].max()
+
+data['SNR_550_6dBm_close'] = np.power(10, np.divide(data['SSA_ref_550_6dBm_close'] - data['SSA_noise_550_6dBm_close'], 10))
+data['SNR_150_6dBm_close'] = np.power(10, np.divide(data['SSA_ref_150_6dBm_close'] - data['SSA_noise_150_6dBm_close'], 10))
+
+data['SNN_noise_6dBm_close'] = np.power(10., np.divide(data['SSA_22'][:, 1], 10.))
+data['SNN_550_6dBm_close'] = np.power(10., np.divide(data['SSA_82'][:, 1], 10.))
+data['SNN_150_6dBm_close'] = np.power(10., np.divide(data['SSA_92'][:, 1], 10.))
+data['SNN_noise_6dBm_close'] = np.divide(data['SNN_noise_6dBm_close'], data['SNN_noise_6dBm_close'][375])
+data['SNN_550_6dBm_close'] = np.divide(data['SNN_550_6dBm_close'], data['SNN_550_6dBm_close'][375])
+data['SNN_150_6dBm_close'] = np.divide(data['SNN_150_6dBm_close'], data['SNN_150_6dBm_close'][42])
 
 ########################################################################################################################
 '''Read Network analyzer and calculate S_21 in not dB'''
 for i in [0, 2]:
     for k in range(2):
-        with open('C:\\Users\\Fernando\\Documents\Phd\\9thAug'
-                  + '\\Absolute_sensitivity_090819_FG\\TRACE' + str(i) + str(k + 1) + '.csv') as a:
-        # with open('C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Sensitivity_calculations\\254_4\\9thAug'
+        # with open('C:\\Users\\Fernando\\Documents\Phd\\9thAug'
         #           + '\\Absolute_sensitivity_090819_FG\\TRACE' + str(i) + str(k + 1) + '.csv') as a:
+        with open('C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Sensitivity_calculations\\254_4\\9thAug'
+                  + '\\Absolute_sensitivity_090819_FG\\TRACE' + str(i) + str(k + 1) + '.csv') as a:
 
             df = csv.reader(a, delimiter=',')
             df_temp = []
@@ -110,61 +137,47 @@ for i in [0, 2]:
 
         data['S21_' + str(i) + str(k + 1)] = np.power(10, np.divide(data['TRACE' + str(i) + str(k + 1)][:, 1], 10))
 
-########################################################################################################################
-'''Normalise S_NN and S_21 with the reference'''
-for i in [0, 5, 7]:
-    data['SNN_' + str(i) + str(1)] = np.divide(data['SNN_' + str(i) + str(1)], data['SNN_' + str(0) + str(1)])
-    data['SNN_' + str(i) + str(2)] = np.divide(data['SNN_' + str(i) + str(1)], data['SNN_' + str(0) + str(2)])
-for i in [2, 8, 9]:
-    data['SNN_' + str(i) + str(1)] = np.divide(data['SNN_' + str(i) + str(1)], data['SNN_' + str(2) + str(1)])
-    data['SNN_' + str(i) + str(2)] = np.divide(data['SNN_' + str(i) + str(1)], data['SNN_' + str(2) + str(2)])
+'''Sensitivity for flux concentrator far, applying 9dBm drive with the NA'''
+data['S21_550_01'] = np.divide(data['S21_01'], data['S21_01'][375])
+data['S21_150_01'] = np.divide(data['S21_01'], data['S21_01'][42])
+data['S21_550_02'] = np.divide(data['S21_02'], data['S21_01'][375])
+data['S21_150_02'] = np.divide(data['S21_02'], data['S21_01'][42])
 
-
-
-data['S21_01'] = np.divide(data['S21_01'][376], data['S21_01'])
-data['S21_02'] = np.divide(data['S21_02'][43], data['S21_02'])
-data['S21_21'] = np.divide(data['S21_21'][376], data['S21_21'])
-data['S21_22'] = np.divide(data['S21_22'][43], data['S21_22'])
-#This part is also finished
+data['S21_550_21'] = np.divide(data['S21_21'], data['S21_21'][375])
+data['S21_150_21'] = np.divide(data['S21_21'], data['S21_21'][42])
+data['S21_550_22'] = np.divide(data['S21_22'], data['S21_21'][375])
+data['S21_150_22'] = np.divide(data['S21_22'], data['S21_21'][42])
 
 ########################################################################################################################
 '''Calculate the Sensitivity in function of frequency'''
 
-data['Bmin_550_9dBm_far'] = np.sqrt(np.divide(data['SNN_51'], data['S21_01'])) * B_ref11
-data['Bmin_550_9dBm_close'] = np.sqrt(np.divide(data['SNN_52'], data['S21_21'])) * B_ref11
-data['Bmin_150_9dBm_far'] = np.sqrt(np.divide(data['SNN_71'], data['S21_02'])) * B_ref12
-data['Bmin_150_9dBm_close'] = np.sqrt(np.divide(data['SNN_72'], data['S21_22'])) * B_ref12
-data['Bmin_550_6dBm_far'] = np.sqrt(np.divide(data['SNN_81'], data['S21_21'])) * B_ref21
-data['Bmin_550_6dBm_close'] = np.sqrt(np.divide(data['SNN_82'], data['S21_22'])) * B_ref21
-data['Bmin_150_6dBm_far'] = np.sqrt(np.divide(data['SNN_91'], data['S21_21'])) * B_ref22
-data['Bmin_150_6dBm_close'] = np.sqrt(np.divide(data['SNN_92'], data['S21_22'])) * B_ref22
+data['Bmin_550_9dBm_far'] = np.multiply(np.sqrt(np.divide(data['SNN_noise_9dBm_far'], data['S21_550_01'])),
+                                        np.divide(B_ref11, np.sqrt(np.multiply(data['SNR_550_9dBm_far'], RBW))))
 
-data['Bmin_550_9dBm_far'] = np.multiply(np.divide(data['Bmin_550_9dBm_far'], np.sqrt(np.multiply(data['SNR_550_9dBm_far'], RBW))), 1e9)
-data['Bmin_550_9dBm_close'] = np.multiply(np.divide(data['Bmin_550_9dBm_close'], np.sqrt(np.multiply(data['SNR_550_9dBm_close'], RBW))), 1e9)
-data['Bmin_150_9dBm_far'] = np.multiply(np.divide(data['Bmin_150_9dBm_far'], np.sqrt(np.multiply(data['SNR_150_9dBm_far'], RBW))), 1e9)
-data['Bmin_150_9dBm_close'] = np.multiply(np.divide(data['Bmin_150_9dBm_close'], np.sqrt(np.multiply(data['SNR_150_9dBm_close'], RBW))), 1e9)
-data['Bmin_550_6dBm_far'] = np.multiply(np.divide(data['Bmin_550_6dBm_far'], np.sqrt(np.multiply(data['SNR_550_6dBm_far'], RBW))), 1e9)
-data['Bmin_550_6dBm_close'] = np.multiply(np.divide(data['Bmin_550_6dBm_close'], np.sqrt(np.multiply(data['SNR_550_6dBm_close'], RBW))), 1e9)
-data['Bmin_150_6dBm_far'] = np.multiply(np.divide(data['Bmin_150_6dBm_far'], np.sqrt(np.multiply(data['SNR_150_6dBm_far'], RBW))), 1e9)
-data['Bmin_150_6dBm_close'] = np.multiply(np.divide(data['Bmin_150_6dBm_close'], np.sqrt(np.multiply(data['SNR_150_6dBm_close'], RBW))), 1e9)
+data['Bmin_150_9dBm_far'] = np.multiply(np.sqrt(np.divide(data['SNN_noise_9dBm_far'], data['S21_150_01'])),
+                                        np.divide(B_ref12, np.sqrt(np.multiply(data['SNR_150_9dBm_far'], RBW))))
 
-data['Bmin_min_9dBm_far'] = data['Bmin_550_9dBm_far'].min()
-data['Bmin_min_550_9dBm_close'] = data['Bmin_550_9dBm_close'].min()
-data['Bmin_min_150_9dBm_far'] = data['Bmin_150_9dBm_far'].min()
-data['Bmin_min_150_9dBm_close'] = data['Bmin_150_9dBm_close'].min()
-data['Bmin_min_550_6dBm_far'] = data['Bmin_550_6dBm_far'].min()
-data['Bmin_min_550_6dBm_close'] = data['Bmin_550_6dBm_close'].min()
-data['Bmin_min_150_6dBm_far'] = data['Bmin_150_6dBm_far'].min()
-data['Bmin_min_150_6dBm_close'] = data['Bmin_150_6dBm_close'].min()
+data['Bmin_550_9dBm_close'] = np.multiply(np.sqrt(np.divide(data['SNN_noise_9dBm_close'], data['S21_550_02'])),
+                                          np.divide(B_ref11, np.sqrt(np.multiply(data['SNR_550_9dBm_close'], RBW))))
 
+data['Bmin_150_9dBm_close'] = np.multiply(np.sqrt(np.divide(data['SNN_noise_9dBm_close'], data['S21_150_02'])),
+                                          np.divide(B_ref12, np.sqrt(np.multiply(data['SNR_150_9dBm_close'], RBW))))
 
-# data['Bmin' + str(k + 1)] = np.multiply(
-#     np.divide(data['Bmin' + str(k + 1)], np.sqrt(np.multiply(data['SNR' + str(k + 1)], RBW))), 1e9)
-# data['Bmin_min' + str(k + 1)] = data['Bmin' + str(k + 1)].min()
+data['Bmin_550_6dBm_far'] = np.multiply(np.sqrt(np.divide(data['SNN_noise_6dBm_far'], data['S21_550_21'])),
+                                        np.divide(B_ref21, np.sqrt(np.multiply(data['SNR_550_6dBm_far'], RBW))))
+
+data['Bmin_150_6dBm_far'] = np.multiply(np.sqrt(np.divide(data['SNN_noise_6dBm_far'], data['S21_150_21'])),
+                                        np.divide(B_ref22, np.sqrt(np.multiply(data['SNR_150_6dBm_far'], RBW))))
+
+data['Bmin_550_6dBm_close'] = np.multiply(np.sqrt(np.divide(data['SNN_noise_6dBm_close'], data['S21_550_22'])),
+                                          np.divide(B_ref21, np.sqrt(np.multiply(data['SNR_550_9dBm_close'], RBW))))
+
+data['Bmin_150_6dBm_close'] = np.multiply(np.sqrt(np.divide(data['SNN_noise_6dBm_close'], data['S21_150_22'])),
+                                          np.divide(B_ref22, np.sqrt(np.multiply(data['SNR_150_6dBm_close'], RBW))))
 
 ########################################################################################################################
 '''SAVE DICTIONARY'''
-pickle_out = open("absolute_sensitivity_2mm.pickle", "wb")
+pickle_out = open("simple_sensitivity_2mm.pickle", "wb")
 pickle.dump(data, pickle_out)
 pickle_out.close()
 ########################################################################################################################
