@@ -14,10 +14,12 @@ R = 50  # Resistance (ohms)
 L = 2 * mu0 * radius * Ncoils * (math.log10(16 * radius / dwire) - 2)  # Inductance
 nu_ref1 = 550 * 1e3  # Func. gen. driving freq.
 nu_ref2 = 150 * 1e3  # Func. gen. driving freq.
-V_drive1 = math.sqrt(math.pow(10, 2.73) * 50 * math.pow(10, 0.9) * 1e-3)  # Voltage driven to the coil
-V_drive2 = math.sqrt(math.pow(10, 2.73) * 50 * math.pow(10, 0.6) * 1e-3)  # Voltage driven to the coil
-# V_drive1 = 10
-# V_drive2 = 4
+# V_drive1 = math.sqrt(math.pow(10, 2.73) * 50 * math.pow(10, 0.9) * 1e-3)  # Voltage driven to the coil
+# V_drive2 = math.sqrt(math.pow(10, 2.73) * 50 * math.pow(10, 0.6) * 1e-3)  # Voltage driven to the coil
+
+V_drive1 = 12
+V_drive2 = 10
+print(V_drive1, V_drive2)
 RBW = 30  # Resolution bandwidth
 I_driven11 = V_drive1 / math.sqrt(math.pow(R, 2) + math.pow((nu_ref1 * 2 * math.pi), 2) * math.pow(L, 2))  # Coils current
 # I_driven11 = I_driven12 = I_driven21 = I_driven22 = 0.473

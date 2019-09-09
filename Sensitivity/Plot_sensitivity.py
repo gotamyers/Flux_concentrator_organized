@@ -27,10 +27,10 @@ lns6 = ax1.plot([106, 108.4, 142, 160, 540, 550, 800], 1e6*data['Bmin_06_close']
 lns7 = ax1.plot(0.001*data_higher['TRACE01'][:, 0], 1e6*data_higher['Bmin_550_6dBm_far'], linestyle='-', color='blue', label='far')
 lns8 = ax1.plot(0.001*data_higher['TRACE01'][:, 0], 1e6*data_higher['Bmin_550_6dBm_close'], linestyle='-', color='r', label='close')
 
-# plt.yscale('log')
+plt.yscale('log')
 # plt.xscale('log')
 
-ax1.set_ylim([0, 20])
+# ax1.set_ylim([0, 20])
 ax1.set_xlim([100, 1000])
 # ax.set_ylim([0.0, 40])
 # lns = lns1+lns2+lns3
