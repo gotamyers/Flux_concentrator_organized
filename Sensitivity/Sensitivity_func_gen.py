@@ -12,19 +12,21 @@ dwire = 0.8  # Wires thickness
 radius = 0.03  # Coil radius
 R = 50  # Resistance (ohms)
 L = 2 * mu0 * radius * Ncoils * (math.log10(16 * radius / dwire) - 2)  # Inductance
+nu_ref = 550 * 1e3  # Func. gen. driving freq.
 RBW = 30  # Resolution bandwidth
 V_drive = 13  # Voltage driven to the coil
-
+I_driven = V_drive / math.sqrt(math.pow(R, 2) + math.pow((nu_ref * 2 * math.pi), 2) * math.pow(L, 2))
+B_ref = math.pow(4.5, 1.5) * mu0 * Ncoils * I_driven / radius
 
 ########################################################################################################################
 '''Read Spectrum analyzer, find SNR and calculate S_NN in not dB'''
 for i in [106, 142, 160, 540, 800]:
 # for i in [106, 142, 540, 550, 800]:
     for k in range(4):
-        with open('C:\\Users\\Fernando\\Documents\\Phd'
-                  + '\\sensitivity_060919_FG\\SSA_' + str("{:02d}".format(k + 1)) + '_' + str(i) + '.csv') as a:
-        # with open('C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Sensitivity_calculations\\254_4\\5thSep'
-        #           + '\\SSA_' + str("{:02d}".format(k + 1)) + '_' + str(i) + 'khz.csv') as a:
+        # with open('C:\\Users\\Fernando\\Documents\\Phd'
+        #           + '\\sensitivity_060919_FG\\SSA_' + str("{:02d}".format(k + 1)) + '_' + str(i) + '.csv') as a:
+        with open('C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Sensitivity_calculations\\254_4\\6thSep'
+                  + '\\SSA_' + str("{:02d}".format(k + 1)) + '_' + str(i) + '.csv') as a:
             df = csv.reader(a, delimiter=',')
             df_temp = []
             for row in df:
@@ -38,10 +40,10 @@ for i in [106, 142, 160, 540, 800]:
         data['SSA_' + str("{:02d}".format(k + 1)) + '_' + str(i) + 'khz'] = np.array(df)
 
 
-with open('C:\\Users\\Fernando\\Documents\Phd\\'
-                  + '\\sensitivity_060919_FG\\SSA_01_ref.csv') as a:
-# with open('C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Sensitivity_calculations\\254_4\\5thSep'
-#           + '\\SSA_noise.csv') as a:
+# with open('C:\\Users\\Fernando\\Documents\Phd\\'
+#                   + '\\sensitivity_060919_FG\\SSA_01_ref.csv') as a:
+with open('C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Sensitivity_calculations\\254_4\\6thSep'
+          + '\\SSA_01_ref.csv') as a:
     df = csv.reader(a, delimiter=',')
     df_temp = []
     for row in df:
@@ -62,8 +64,8 @@ for i in [106, 142, 160, 540, 800]:
         data['SSA_ref_' + str("{:02d}".format(k + 1)) + '_' + str(i) + 'khz'] = \
             data['SSA_' + str("{:02d}".format(k + 1)) + '_' + str(i) + 'khz'][
             int(751 * (i - 100) / 900 - 1):int(751 * (i - 100) / 900 + 1), 1].max()
-        # data['SSA_noise' + str(i)] = data['SSA_noise'][int(751 * (i - 100) / 900), 1]
-        data['SSA_noise' + str(i)] = data['SSA_01_noise'][375, 1]
+        data['SSA_noise' + str(i)] = data['SSA_01_noise'][int(751 * (i - 100) / 900), 1]
+        # data['SSA_noise' + str(i)] = data['SSA_01_noise'][375, 1]
 
         data['SNR_' + str("{:02d}".format(k + 1)) + '_' + str(i) + 'khz'] = \
             np.power(10, np.divide(
@@ -85,14 +87,11 @@ data['Bmin_close'] = np.zeros(5)
 for i in [106, 142, 160, 540, 800]:
 # for i in [106, 142, 540, 550, 800]:
     for k in range(2):
-        data['I_driven' + str(i) + str(k+1)] = \
-            V_drive / math.sqrt(math.pow(R, 2) + math.pow((i * 1e3 * 2 * math.pi), 2) * math.pow(L, 2))  # Coils current
-        data['B_ref' + str(i) + str(k+1)] = math.pow(4.5, 1.5) * mu0 * Ncoils * data['I_driven' + str(i) + str(k+1)] / radius
         data['root_' + str("{:02d}".format(k + 1)) + '_' + str(i)] =\
             np.sqrt(np.multiply(data['SNR_' + str("{:02d}".format(k + 1)) + '_' + str(i) + 'khz'], RBW))
 
         data['Bmin_' + str("{:02d}".format(k + 1)) + '_' + str(i)] =\
-            data['B_ref' + str(i) + str(k+1)] / data['root_' + str("{:02d}".format(k + 1)) + '_' + str(i)]
+            B_ref / data['root_' + str("{:02d}".format(k + 1)) + '_' + str(i)]
 
 
     data['Bmin_far'][t] = data['Bmin_01' + '_' + str(i)]
