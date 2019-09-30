@@ -23,7 +23,7 @@ B_ref = math.pow(4.5, 1.5) * mu0 * Ncoils * I_driven / radius
 ########################################################################################################################
 '''Read Oscilloscope'''
 for i in range(5):
-    with open('C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Sensitivity_calculations\\254_4\\20thSep\\1_to_10_Hz'
+    with open('C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Sensitivity_calculations\\254_4\\30thSep\\1_to_10_Hz'
               + '\\n' + str(i) + '.csv') as a:
         df = csv.reader(a, delimiter=',')
         df_temp = []
@@ -81,7 +81,7 @@ for i in range(5):
     plt.ylabel('mV/Hz')
 
     plt.xlim(1, 1000)
-    plt.ylim(1e-5, 0.80)
+    plt.ylim(1e-8, 0.80)
     # plt.legend(loc='upper right')
 
 plt.show()
