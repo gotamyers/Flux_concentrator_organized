@@ -23,9 +23,14 @@ B_ref = math.pow(4.5, 1.5) * mu0 * Ncoils * I_driven / radius
 ########################################################################################################################
 '''Read Oscilloscope'''
 for i in range(5):
+
     # with open('C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Sensitivity_calculations\\254_4\\19thSep'
     #           + '\\noise' + str(i) + '.csv') as a:
     with open('C:\\Users\\Fernando\\Documents\Phd\\20thSep\\100_to_1000_Hz\\n' + str(i) + '.csv') as a:
+
+    # with open('C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Sensitivity_calculations\\254_4\\30thSep\\1_to_10_Hz'
+    #           + '\\n' + str(i) + '.csv') as a:
+
         df = csv.reader(a, delimiter=',')
         df_temp = []
         for row in df:
@@ -73,11 +78,16 @@ pickle_out.close()
 for i in range(5):
     plt.figure(i)
 
-    plt.plot(data['freq' + str(i)], data['FFT_noise' + str(i) + '_theoretical'])
+    plt.plot(data['freq' + str(i)], 1e3*data['FFT_noise' + str(i) + '_theoretical'])
 
     plt.title('Noise' + str(i))
-    plt.xlim(0, 10000)
-    plt.ylim(0, 0.00040)
+    plt.xscale('log')
+    plt.yscale('log')
+    plt.xlabel('Frequency (Hz)')
+    plt.ylabel('mV/Hz')
+
+    plt.xlim(1, 1000)
+    plt.ylim(1e-8, 0.80)
     # plt.legend(loc='upper right')
 
 plt.show()
