@@ -31,6 +31,8 @@ for i in range(10):
 
 plt.xscale('log')
 plt.yscale('log')
+plt.xlabel('Frequency (Hz)')
+plt.ylabel(r'Sensitivity T/$\sqrt{Hz}$')
 
 
 plt.show()
