@@ -20,14 +20,15 @@ tal = 4
 RBW = 2*math.sqrt(6)/tal  # Resolution bandwidth
 I_driven = V_drive / math.sqrt(math.pow(R, 2) + math.pow((nu_ref * 2 * math.pi), 2) * math.pow(L, 2))
 B_ref = math.pow(4.5, 1.5) * mu0 * Ncoils * I_driven / radius
-freq_order = 10 #mininum frequency on a particular range
+freq_order = 100000 #mininum frequency on a particular range
 ########################################################################################################################
 '''Read Oscilloscope'''
 
-# with open('C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Sensitivity_calculations\\254_4\\16thSep'
-#           + '\\01_20.csv') as a:
+
 for i in range(10):
-    with open('C:\\Users\\Fernando\\Documents\Phd\\30thSep\\10_to_100_Hz\\1_' + str((i+1)*freq_order) + '.csv') as a:
+    # with open('C:\\Users\\Fernando\\Documents\Phd\\30thSep\\10_to_100_Hz\\1_' + str((i+1)*freq_order) + '.csv') as a:
+    with open('C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Sensitivity_calculations\\254_4\\03rdOct'
+              + '\\100_to_1000_kHz\\1_' + str((i + 1)*100) + '.csv') as a:
 
         df = csv.reader(a, delimiter=',')
         df_temp = []
@@ -40,10 +41,10 @@ for i in range(10):
     data['flux_far_' + str((i+1))] = np.asarray(df)
 
 for i in range(5):
-    with open('C:\\Users\\Fernando\\Documents\Phd\\30thSep'
-              + '\\10_to_100_Hz\\n' + str(i) + '.csv') as a:
-    # with open('C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Sensitivity_calculations\\254_4\\30thSep'
-    #           + '\\1_to_10_Hz\\n' + str(i) + '.csv') as a:
+    # with open('C:\\Users\\Fernando\\Documents\Phd\\30thSep'
+    #           + '\\10_to_100_Hz\\n' + str(i) + '.csv') as a:
+    with open('C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Sensitivity_calculations\\254_4\\03rdOct'
+              + '\\100_to_1000_kHz\\n' + str(i) + '.csv') as a:
 
         df = csv.reader(a, delimiter=',')
         df_temp = []
@@ -71,7 +72,7 @@ for i in range(10):
     data['FFT_flux_far_' + str((i+1))] = np.fft.fft(data['flux_far_' + str((i+1))][:, 1])
     data['FFT_flux_far_' + str((i+1)) + '_theo'] = (2.0*np.abs(data['FFT_flux_far_' + str((i+1))] / N))**2
 
-    driven_freq = np.where((data['freq'] > (i+1)*freq_order - 0.1) & (data['freq'] < (i+1)*freq_order + 0.1))
+    driven_freq = np.where((data['freq'] > (i+0.9)*freq_order) & (data['freq'] < (i+1.1)*freq_order))
     # print(driven_freq)
 
     data['flux_far_max'] = data['FFT_flux_far_' + str((i+1)) + '_theo'][driven_freq].max()
@@ -85,23 +86,23 @@ for i in range(10):
 
 ########################################################################################################################
 '''SAVE DICTIONARY'''
-pickle_out = open("2mmflux_far_10to100Hz.pickle", "wb")
-pickle.dump(data, pickle_out)
-pickle_out.close()
+# pickle_out = open("2mmflux_far_10to100Hz.pickle", "wb")
+# pickle.dump(data, pickle_out)
+# pickle_out.close()
 ########################################################################################################################
 
 
 for i in range(10):
     plt.figure(i)
     plt.plot(data['freq'][mask], data['FFT_flux_far_' + str((i+1)) + '_theo'][mask])
-    plt.xlim(9.5, 100.5)
+    plt.xlim(90000, 1010000)
     # plt.ylim(0, 0.80)
 
     plt.xlabel('Frequency (Hz)')
-    plt.ylabel('SNR')
+    # plt.ylabel('SNR')
     # plt.title('20 khz - far')
 
-plt.show()
+
 
 # for i in range(10):
 #     plt.figure(i+1)
@@ -116,15 +117,15 @@ plt.show()
 #     # plt.title('20 khz - far')
 #
 plt.figure(12)
-plt.plot(data['freq'][mask], 1e3*data['FFT_noise4_theo'][mask])
-plt.xlim(9.5, 100.5)
+plt.plot(data['freq'][mask], data['FFT_noise4_theo'][mask])
+plt.xlim(90000, 1010000)
 # plt.ylim(0, 0.80)
 # plt.yscale('log')
 # plt.xscale('log')
 
-plt.xlabel('Frequency (Hz)')
-plt.ylabel('mV')
-plt.title('Noise')
-
+# plt.xlabel('Frequency (Hz)')
+# plt.ylabel('mV')
+# plt.title('Noise')
+#
 plt.show()
 
