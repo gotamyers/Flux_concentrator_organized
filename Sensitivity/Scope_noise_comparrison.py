@@ -25,18 +25,17 @@ B_ref = math.pow(4.5, 1.5) * mu0 * Ncoils * I_driven / radius
 '''Read Oscilloscope'''
 for i in range(5):
     # with open('C:\\Users\\Fernando\\Documents\Phd\\20thSep\\100_to_1000_Hz\\n' + str(i) + '.csv') as a:
-    with open('C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Sensitivity_calculations\\254_4\\03rdOct\\10_to_100_kHz'
+    with open('C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Sensitivity_calculations\\254_4\\08thOct\\100_to_1000_kHz'
               + '\\n' + str(i) + '.csv') as a:
 
         df = csv.reader(a, delimiter=',')
         df_temp = []
         for row in df:
             df_temp.append(row)
-        df = df_temp[21:-1]
+        df = df_temp[21:1000021]
         for j in range(len(df)):
             df[j] = [np.float(df[j][0]), np.float(df[j][1])]
     data['noise' + str(i)] = np.asarray(df)
-
 
 '''Take the fourier transform'''
 for i in range(5):
@@ -75,7 +74,7 @@ for i in range(5):
 labels = ['Scope', 'Electronics', 'Laser on', 'Coupled', 'Coil away']
 colors = ['b', 'y', 'r', 'g', 'k']
 
-for i in [2, 3, 4]:
+for i in [4, 3]:
     plt.figure(1)
 
     plt.plot(data['freq' + str(i)], data['FFT_noise' + str(i) + '_theoretical'], label=labels[i], color=colors[i])
@@ -86,7 +85,7 @@ for i in [2, 3, 4]:
     plt.xlabel('Frequency (Hz)')
     plt.ylabel('Power Spectrum (dB)')
 
-    plt.xlim(9000, 101000)
+    plt.xlim(50000, 1050000)
     plt.ylim(-160, -60)
     plt.legend(loc='upper right')
 

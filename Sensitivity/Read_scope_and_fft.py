@@ -25,36 +25,36 @@ freq_order = 100000 #mininum frequency on a particular range
 '''Read Oscilloscope'''
 
 
-for i in range(10):
+for i in [0, 1, 2, 4, 7]:
     # with open('C:\\Users\\Fernando\\Documents\Phd\\30thSep\\10_to_100_Hz\\1_' + str((i+1)*freq_order) + '.csv') as a:
-    with open('C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Sensitivity_calculations\\254_4\\03rdOct'
-              + '\\100_to_1000_kHz\\1_' + str((i + 1)*100) + '.csv') as a:
+    with open('C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Sensitivity_calculations\\254_4\\08thOct'
+              + '\\100_to_1000_kHz\\2_' + str((i + 1)*100) + '.csv') as a:
 
         df = csv.reader(a, delimiter=',')
         df_temp = []
         for row in df:
             df_temp.append(row)
-        df = df_temp[21:-1]
+        df = df_temp[21:1000021]
         for j in range(len(df)):
             df[j] = [np.float(df[j][0]), np.float(df[j][1])]
 
     data['flux_far_' + str((i+1))] = np.asarray(df)
 
-for i in range(5):
+# for i in range(5):
     # with open('C:\\Users\\Fernando\\Documents\Phd\\30thSep'
     #           + '\\10_to_100_Hz\\n' + str(i) + '.csv') as a:
-    with open('C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Sensitivity_calculations\\254_4\\03rdOct'
-              + '\\100_to_1000_kHz\\n' + str(i) + '.csv') as a:
+with open('C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Sensitivity_calculations\\254_4\\08thOct'
+          + '\\100_to_1000_kHz\\n4.csv') as a:
 
-        df = csv.reader(a, delimiter=',')
-        df_temp = []
-        for row in df:
-            df_temp.append(row)
-        df = df_temp[21:-1]
-        for j in range(len(df)):
-            df[j] = [np.float(df[j][0]), np.float(df[j][1])]
+    df = csv.reader(a, delimiter=',')
+    df_temp = []
+    for row in df:
+        df_temp.append(row)
+    df = df_temp[21:1000021]
+    for j in range(len(df)):
+        df[j] = [np.float(df[j][0]), np.float(df[j][1])]
 
-    data['noise' + str(i)] = np.asarray(df)
+data['noise4'] = np.asarray(df)
 
 '''Another fourier transform (https://stackoverflow.com/questions/25735153/plotting-a-fast-fourier-transform-in-python)'''
 
@@ -65,11 +65,13 @@ data['freq'] = np.fft.fftfreq(N, delta_t)
 mask = data['freq'] > 0
 
 data['FFT_noise4'] = np.fft.fft(data['noise4'][:, 1])
+# data['FFT_noise4_theo'] = 20.*np.log10(np.abs(data['FFT_noise4'] / N))
 data['FFT_noise4_theo'] = (2.0*np.abs(data['FFT_noise4'] / N))**2
 
 
-for i in range(10):
+for i in [0, 1, 2, 4, 7]:
     data['FFT_flux_far_' + str((i+1))] = np.fft.fft(data['flux_far_' + str((i+1))][:, 1])
+    # data['FFT_flux_far_' + str((i+1)) + '_theo'] = 20.*np.log10(np.abs(data['FFT_flux_far_' + str((i+1))] / N))
     data['FFT_flux_far_' + str((i+1)) + '_theo'] = (2.0*np.abs(data['FFT_flux_far_' + str((i+1))] / N))**2
 
     driven_freq = np.where((data['freq'] > (i+0.9)*freq_order) & (data['freq'] < (i+1.1)*freq_order))
@@ -92,11 +94,11 @@ for i in range(10):
 ########################################################################################################################
 
 
-for i in range(10):
+for i in [0, 1, 2, 4, 7]:
     plt.figure(i)
     plt.plot(data['freq'][mask], data['FFT_flux_far_' + str((i+1)) + '_theo'][mask])
-    plt.xlim(90000, 1010000)
-    # plt.ylim(0, 0.80)
+    plt.xlim(50000, 1050000)
+    plt.ylim(-160, -60)
 
     plt.xlabel('Frequency (Hz)')
     # plt.ylabel('SNR')
@@ -118,14 +120,14 @@ for i in range(10):
 #
 plt.figure(12)
 plt.plot(data['freq'][mask], data['FFT_noise4_theo'][mask])
-plt.xlim(90000, 1010000)
-# plt.ylim(0, 0.80)
+plt.xlim(50000, 1050000)
+plt.ylim(-160, -60)
 # plt.yscale('log')
 # plt.xscale('log')
 
 # plt.xlabel('Frequency (Hz)')
 # plt.ylabel('mV')
-# plt.title('Noise')
+plt.title('Noise')
 #
 plt.show()
 
