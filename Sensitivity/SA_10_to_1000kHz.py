@@ -3,8 +3,6 @@ import math
 import pickle
 import numpy as np
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-import matplotlib.ticker as mticker
 
 data = {}
 
@@ -27,8 +25,10 @@ B_ref = math.pow(4.5, 1.5) * mu0 * Ncoils * I_driven / radius
 ########################################################################################################################
 '''Read Spectrum analyzer, find SNR and calculate S_NN in not dB'''
 for k in noise_frequencies:
-    with open('C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Sensitivity_calculations\\254_4\\10thOct'
+    with open('C:\\Users\\Fernando\\Documents\\Phd\\10thOct'
+    # with open('C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Sensitivity_calculations\\254_4\\10thOct'
               + '\\SSA_n' + str(k) + '.csv') as a:
+
         df = csv.reader(a, delimiter=',')
         df_temp = []
         for row in df:
@@ -42,7 +42,8 @@ for k in noise_frequencies:
 
 for k in frequencies:
     for i in range(2):
-        with open('C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Sensitivity_calculations\\254_4\\10thOct'
+        with open('C:\\Users\\Fernando\\Documents\\Phd\\10thOct'
+        # with open('C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Sensitivity_calculations\\254_4\\10thOct'
                   + '\\SSA_' + str(i + 1) + 'a' + str(k) + '.csv') as a:
             df = csv.reader(a, delimiter=',')
             df_temp = []
@@ -63,7 +64,10 @@ for k in frequencies:
         data['SNR' + str(i + 1) + 'a' + str(k)] = data['signal' + str(i + 1) + 'a' + str(k)] - noise_max
         # data['S_NN' + str(i+1) + 'a' + str(k)] = np.power(10, np.divide(data['noise500'][:, 1], 10))
         ind_freq = np.where(frequencies == k)
-        data['Sensitivity' + str(i + 1) + 'a' + str(k)] = np.divide(B_ref[ind_freq], np.sqrt(data['SNR' + str(i + 1) +
+        if data['SNR' + str(i + 1) + 'a' + str(k)]*RBW <= 0:
+            data['Sensitivity' + str(i + 1) + 'a' + str(k)] = 0
+        else:
+            data['Sensitivity' + str(i + 1) + 'a' + str(k)] = np.divide(B_ref[ind_freq], np.sqrt(data['SNR' + str(i + 1) +
                                                                                                   'a' + str(k)]*RBW))
         # print(data['Sensitivity' + str(i + 1) + 'a' + str(k)])
 

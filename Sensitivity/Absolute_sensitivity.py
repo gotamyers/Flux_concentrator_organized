@@ -14,12 +14,8 @@ R = 50  # Resistance (ohms)
 L = 2 * mu0 * radius * Ncoils * (math.log10(16 * radius / dwire) - 2)  # Inductance
 nu_ref1 = 550 * 1e3  # Func. gen. driving freq.
 nu_ref2 = 150 * 1e3  # Func. gen. driving freq.
-# V_drive1 = math.sqrt(math.pow(10, 2.73) * 50 * math.pow(10, 0.9) * 1e-3)  # Voltage driven to the coil
-# V_drive2 = math.sqrt(math.pow(10, 2.73) * 50 * math.pow(10, 0.6) * 1e-3)  # Voltage driven to the coil
-
-V_drive1 = 12
-V_drive2 = 10
-print(V_drive1, V_drive2)
+V_drive1 = math.sqrt(math.pow(10, 2.73) * 50 * math.pow(10, 0.9) * 1e-3)  # Voltage driven to the coil
+V_drive2 = math.sqrt(math.pow(10, 2.73) * 50 * math.pow(10, 0.6) * 1e-3)  # Voltage driven to the coil
 RBW = 30  # Resolution bandwidth
 I_driven11 = V_drive1 / math.sqrt(math.pow(R, 2) + math.pow((nu_ref1 * 2 * math.pi), 2) * math.pow(L, 2))  # Coils current
 # I_driven11 = I_driven12 = I_driven21 = I_driven22 = 0.473
@@ -35,10 +31,10 @@ B_ref22 = math.pow(4.5, 1.5) * mu0 * Ncoils * I_driven22 / radius
 '''Read Spectrum analyzer, find SNR and calculate S_NN in not dB'''
 for i in [0, 2, 5, 7, 8, 9]:
     for k in range(2):
-        # with open('C:\\Users\\Fernando\\Documents\Phd\\9thAug'
-        #           + '\\Absolute_sensitivity_090819_FG\\SSA_' + str(i) + str(k + 1) + '.csv') as a:
-        with open('C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Sensitivity_calculations\\254_4\\9thAug'
+        with open('C:\\Users\\Fernando\\Documents\Phd\\9thAug'
                   + '\\Absolute_sensitivity_090819_FG\\SSA_' + str(i) + str(k + 1) + '.csv') as a:
+        # with open('C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Sensitivity_calculations\\254_4\\9thAug'
+        #           + '\\Absolute_sensitivity_090819_FG\\SSA_' + str(i) + str(k + 1) + '.csv') as a:
             df = csv.reader(a, delimiter=',')
             df_temp = []
             for row in df:
@@ -120,10 +116,10 @@ data['SNN_150_6dBm_close'] = np.divide(data['SNN_150_6dBm_close'], data['SNN_150
 '''Read Network analyzer and calculate S_21 in not dB'''
 for i in [0, 2]:
     for k in range(2):
-        # with open('C:\\Users\\Fernando\\Documents\Phd\\9thAug'
-        #           + '\\Absolute_sensitivity_090819_FG\\TRACE' + str(i) + str(k + 1) + '.csv') as a:
-        with open('C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Sensitivity_calculations\\254_4\\9thAug'
+        with open('C:\\Users\\Fernando\\Documents\Phd\\9thAug'
                   + '\\Absolute_sensitivity_090819_FG\\TRACE' + str(i) + str(k + 1) + '.csv') as a:
+        # with open('C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Sensitivity_calculations\\254_4\\9thAug'
+        #           + '\\Absolute_sensitivity_090819_FG\\TRACE' + str(i) + str(k + 1) + '.csv') as a:
 
             df = csv.reader(a, delimiter=',')
             df_temp = []
