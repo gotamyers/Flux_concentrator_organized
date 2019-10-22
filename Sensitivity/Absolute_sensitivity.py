@@ -31,10 +31,10 @@ B_ref22 = math.pow(4.5, 1.5) * mu0 * Ncoils * I_driven22 / radius
 '''Read Spectrum analyzer, find SNR and calculate S_NN in not dB'''
 for i in [0, 2, 5, 7, 8, 9]:
     for k in range(2):
-        with open('C:\\Users\\Fernando\\Documents\Phd\\9thAug'
-                  + '\\Absolute_sensitivity_090819_FG\\SSA_' + str(i) + str(k + 1) + '.csv') as a:
-        # with open('C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Sensitivity_calculations\\254_4\\9thAug'
+        # with open('C:\\Users\\Fernando\\Documents\Phd\\9thAug'
         #           + '\\Absolute_sensitivity_090819_FG\\SSA_' + str(i) + str(k + 1) + '.csv') as a:
+        with open('C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Sensitivity_calculations\\254_4\\9thAug'
+                  + '\\Absolute_sensitivity_090819_FG\\SSA_' + str(i) + str(k + 1) + '.csv') as a:
             df = csv.reader(a, delimiter=',')
             df_temp = []
             for row in df:
@@ -116,10 +116,10 @@ data['SNN_150_6dBm_close'] = np.divide(data['SNN_150_6dBm_close'], data['SNN_150
 '''Read Network analyzer and calculate S_21 in not dB'''
 for i in [0, 2]:
     for k in range(2):
-        with open('C:\\Users\\Fernando\\Documents\Phd\\9thAug'
-                  + '\\Absolute_sensitivity_090819_FG\\TRACE' + str(i) + str(k + 1) + '.csv') as a:
-        # with open('C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Sensitivity_calculations\\254_4\\9thAug'
+        # with open('C:\\Users\\Fernando\\Documents\Phd\\9thAug'
         #           + '\\Absolute_sensitivity_090819_FG\\TRACE' + str(i) + str(k + 1) + '.csv') as a:
+        with open('C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Sensitivity_calculations\\254_4\\9thAug'
+                  + '\\Absolute_sensitivity_090819_FG\\TRACE' + str(i) + str(k + 1) + '.csv') as a:
 
             df = csv.reader(a, delimiter=',')
             df_temp = []
