@@ -12,15 +12,14 @@ Ncoils = 10  # Number of turns
 dwire = 0.8  # Wires thickness
 radius = 0.03  # Coil radius
 R = 50  # Resistance (ohms)
-L = 2 * mu0 * radius * Ncoils * (math.log10(16 * radius / dwire) - 2)  # Inductance
+L = 2 * mu0 * radius * Ncoils * (np.log10(16 * radius / dwire) - 2)  # Inductance
 frequencies = np.asarray([10, 20, 30, 40, 50, 60, 70, 80, 90, 110, 200, 300, 400, 500, 600, 700, 800, 900, 990])
 noise_frequencies = [10, 20, 45, 70, 110, 200, 300, 500, 800]
 # nu_ref = 550 * 1e3  # Func. gen. driving freq.
 V_drive = 10/(2*math.sqrt(2))  # Voltagem driven to the coil
 RBW = 30  # Resolution bandwidth
-I_driven = np.divide(V_drive, np.sqrt(R**2) + ((frequencies * 2 * np.pi)**2) * L**2)  # Coils current
-B_ref = math.pow(4.5, 1.5) * mu0 * Ncoils * I_driven / radius
-
+I_driven = np.divide(V_drive, np.sqrt(R**2 + (1000*frequencies * 2 * np.pi)**2*L**2))  # Coils current
+B_ref = pow(4.5, 1.5) * mu0 * Ncoils * I_driven / radius
 
 ########################################################################################################################
 '''Read Spectrum analyzer, find SNR and calculate S_NN in not dB'''
@@ -85,7 +84,7 @@ for k in frequencies:
         else:
             data['Sensitivity' + str(i + 1) + 'a' + str(k)] = np.divide(B_ref[ind_freq], np.sqrt(data['SNR' + str(i + 1) +
                                                                                                   'a' + str(k)]*RBW))
-        # print(data['Sensitivity' + str(i + 1) + 'a' + str(k)])
+        # print(B_ref[ind_freq])
 
 ########################################################################################################################
 '''SAVE DICTIONARY'''

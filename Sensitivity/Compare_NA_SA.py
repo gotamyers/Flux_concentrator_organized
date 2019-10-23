@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 '''This script is for comparing continuous data obtained with NA and compare with quantized data from SA'''
 
-pickle_in = open("simple_sensitivity_2mm.pickle", "rb")
+pickle_in = open("sensitivity_2mm.pickle", "rb")
 continuous_data = pickle.load(pickle_in)
 
 pickle_in = open("2mmflux_SA_funcgen_10to1000khz.pickle", "rb")
@@ -30,13 +30,12 @@ sensitivity_close = np.zeros(len(frequencies))
 for i in range(len(frequencies)):
     s21_far[i] = quantized_data['S21_1a' + str(frequencies[i])]
     s21_close[i] = quantized_data['S21_2a' + str(frequencies[i])]
-    sensitivity_far[i] = quantized_data['Sensitivity1a' + str(frequencies[i])]
-    sensitivity_close[i] = quantized_data['Sensitivity2a' + str(frequencies[i])]
+    sensitivity_far[i] = quantized_data['SensitivityV1a' + str(frequencies[i])]
+    sensitivity_close[i] = quantized_data['SensitivityV2a' + str(frequencies[i])]
 
 plt.figure(1)
-
-plt.scatter(1e3*frequencies, s21_far, label='far', color='indianred')
-plt.plot(continuous_data['TRACE01'][:, 0], 1.1*continuous_data['TRACE01'][:, 1], label='far', color='indianred',
+plt.scatter(1e3*frequencies, 0.9*s21_far, label='far', color='indianred')
+plt.plot(continuous_data['TRACE01'][:, 0], continuous_data['TRACE01'][:, 1], label='far', color='indianred',
          linewidth=0.5, linestyle='--')
 
 plt.scatter(1e3*frequencies, s21_close, label='close', color='k')
@@ -45,7 +44,23 @@ plt.plot(continuous_data['TRACE02'][:, 0], continuous_data['TRACE02'][:, 1], lab
 
 plt.xscale('log')
 plt.xlabel('Frequency (Hz)')
-plt.ylabel('Power (dB)')
+plt.ylabel('PSD (dB)')
+plt.title('Comparison')
+plt.legend(loc='lower left')
+
+plt.figure(2)
+plt.scatter(1e3*frequencies, 3e9*sensitivity_far, label='far', color='indianred')
+plt.scatter(1e3*frequencies, 5e9*sensitivity_close, label='close', color='k')
+
+plt.plot(continuous_data['TRACE01'][:, 0], 1e9*continuous_data['Bmin_1'], label='far', color='indianred',
+         linewidth=0.5, linestyle='--')
+plt.plot(continuous_data['TRACE02'][:, 0], 1e9*continuous_data['Bmin_2'], label='close', color='k',
+         linewidth=0.5, linestyle='--')
+
+plt.xscale('log')
+plt.yscale('log')
+plt.xlabel('Frequency (Hz)')
+plt.ylabel('Sensitivity (nT)')
 plt.title('Comparison')
 plt.legend(loc='lower left')
 
