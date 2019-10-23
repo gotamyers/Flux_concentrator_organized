@@ -74,6 +74,7 @@ for k in frequencies:
         # data['S_NN' + str(i+1) + 'a' + str(k)] = np.power(10, np.divide(data['noise500'][:, 1], 10))
         ind_freq = np.where(frequencies == k)
         if data['SNRV' + str(i + 1) + 'a' + str(k)]*RBW <= 0:
+            data['SNRV' + str(i + 1) + 'a' + str(k)] = 0
             data['SensitivityV' + str(i + 1) + 'a' + str(k)] = 0
         else:
             data['SensitivityV' + str(i + 1) + 'a' + str(k)] = np.divide(B_ref[ind_freq], np.sqrt(data['SNRV' + str(i + 1)
@@ -97,18 +98,22 @@ signal_far = np.zeros(len(frequencies))
 signal_close = np.zeros(len(frequencies))
 sensitivity_far = np.zeros(len(frequencies))
 sensitivity_close = np.zeros(len(frequencies))
+noise_maxV = np.zeros(len(frequencies))
 for i in range(len(frequencies)):
     signal_far[i] = data['signalV1a' + str(frequencies[i])]
     signal_close[i] = data['signalV2a' + str(frequencies[i])]
     sensitivity_far[i] = data['SensitivityV1a' + str(frequencies[i])]
     sensitivity_close[i] = data['SensitivityV2a' + str(frequencies[i])]
+    noise_maxV[i] = data['noise_maxV1a' + str(frequencies[i])]
 plt.figure(1)
 # for k in frequencies:
-plt.scatter(frequencies, signal_far, label='far', color='firebrick')
-plt.scatter(frequencies, signal_close, label='close', color='k')
-plt.plot(1e-3*data['noise500'][:, 0], data['noiseV500'], label='noise', color='cornflowerblue', linewidth=0.5, linestyle='--')
+plt.scatter(frequencies, 10*np.log10(signal_far), label='far', color='firebrick')
+plt.scatter(frequencies, 10*np.log10(signal_close), label='close', color='k')
+plt.plot(1e-3*data['noise500'][:, 0], 10*np.log10(data['noiseV500']), label='noise', color='cornflowerblue', linewidth=0.5, linestyle='--')
+plt.scatter(frequencies, 10*np.log10(noise_maxV))
 plt.xlim(9, 1000)
-plt.ylim(0., 2.e-6)
+# plt.ylim(0., 2.e-6)
+plt.ylim(-110, -50)
 plt.xscale('log')
 # plt.yscale('log')
 plt.legend(loc='upper right')

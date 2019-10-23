@@ -15,15 +15,13 @@ quantized_data = pickle.load(pickle_in)
 
 frequencies = np.asarray([10, 20, 30, 40, 50, 60, 70, 80, 90, 110, 200, 300, 400, 500, 600, 700, 800, 900, 990])
 noise_frequencies = [10, 20, 45, 70, 110, 200, 300, 500, 800]
-power_in = 0.25
+power_in = 0.003
 
 for k in frequencies:
     for i in range(2):
-        quantized_data['S21_' + str(i + 1) + 'a' + str(k)] = np.multiply(quantized_data['SNR' + str(i + 1)
-                                                                                                    + 'a' + str(k)],
-                                                                                     quantized_data['noise_max' +
-                                                                                                    str(i + 1) + 'a' +
-                                                                                                    str(k)])/power_in
+        quantized_data['S21_' + str(i + 1) + 'a' + str(k)] = 10*np.log10(np.multiply(quantized_data['SNRV' + str(i + 1) + 'a' + str(k)],
+                                                                         quantized_data['noise_maxV' + str(i + 1) + 'a' +
+                                                                                                    str(k)])/power_in)
 
 s21_far = np.zeros(len(frequencies))
 s21_close = np.zeros(len(frequencies))
@@ -38,7 +36,7 @@ for i in range(len(frequencies)):
 plt.figure(1)
 
 plt.scatter(1e3*frequencies, s21_far, label='far', color='indianred')
-plt.plot(continuous_data['TRACE01'][:, 0], continuous_data['TRACE01'][:, 1], label='far', color='indianred',
+plt.plot(continuous_data['TRACE01'][:, 0], 1.1*continuous_data['TRACE01'][:, 1], label='far', color='indianred',
          linewidth=0.5, linestyle='--')
 
 plt.scatter(1e3*frequencies, s21_close, label='close', color='k')
