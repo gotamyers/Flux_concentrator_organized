@@ -1,20 +1,50 @@
 import pickle
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.misc import derivative
 
-x = np.linspace(1e4, 1e6, 100)
-omega = x
-tal = 1e-7
-mu_inf = 5.1e2
-mu_dc = 9.2e4
+# (mu_dc - mu_inf)/(1. - 1j*omega*tal) + mu_inf
+# tal = np.power(omega, -nu)*pow(t, 1-nu)*np.exp(1j*nu*np.pi/2)
+# omega = np.linspace(1, 1e8, 1000000)
+omega = np.linspace(1, 1e8, 100000)
 
-mu_line = (mu_dc - mu_inf) / (1 + omega**2*pow(tal,2)) + mu_inf
-mu_twolines = omega*tal*(mu_dc - 1) / (1 + omega**2*pow(tal,2))
+nu = 2.39505646e-1
+t = 4.63152449e-6
+tal = np.power(omega, -nu)*pow(t, 1-nu)*np.exp(1j*nu*np.pi/2)
+mu_inf = 5.10351812e2
+mu_dc = 9.21113854e4
 
-mu_omega = mu_line + 1j * mu_twolines
+mu_omega = (mu_dc - mu_inf)/(1. - 1j*omega*tal) + mu_inf
+
+mu_real = mu_omega.real
+mu_imaginary = mu_omega.imag
+
+mu_prime = np.diff(mu_real, 1)
+mu_two_prime = np.diff(mu_prime, 1)
+
 
 plt.figure(1)
-plt.plot(x, mu_line)
-# plt.plot(x, mu_twolines, color='k')
-
+plt.plot(omega, mu_real, color='red', linestyle='--')
+plt.plot(omega, mu_imaginary, color='green', linestyle='--')
+plt.xscale('log')
+#
+# plt.figure(2)
+# plt.plot(omega[:-1], mu_prime, color='red', linestyle='--')
+# plt.xscale('log')
+#
+# plt.figure(3)
+# plt.scatter(omega, second, color='red')
+# plt.xscale('log')
+#
 plt.show()
+
+# import sympy as sp
+# x = sp.Symbol('x')
+# nu = 2.39505646e-1
+# t = 4.63152449e-6
+# mu_inf = 5.10351812e2
+# mu_dc = 9.21113854e4
+# tal_x = np.power(x, -nu)*pow(t, 1-nu)*np.exp(1j*nu*np.pi/2)
+#
+# mu_x = (mu_dc - mu_inf)/(1. - 1j*x*tal_x) + mu_inf
+# mu_real = mu_x.real
