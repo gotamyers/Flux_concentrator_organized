@@ -118,9 +118,9 @@ for k in range(1): #this part is separeted from the one above just because the n
 ###########################################################################################################################################
 
 '''SAVE DICTIONARY'''
-pickle_out = open("dict.pickle", "wb")
-pickle.dump(data, pickle_out)
-pickle_out.close()
+# pickle_out = open("dict.pickle", "wb")
+# pickle.dump(data, pickle_out)
+# pickle_out.close()
 ###########################################################################################################################################
 
 '''After running this script, go to script 'Exclude_SA_stopped_points.py' because it exclude the data acquired while
