@@ -74,8 +74,9 @@ for i in range(len(frequencies)):
 
 fig, ax1 = plt.subplots()
 
-ax1.plot(omega, mu_real, color='red', linestyle='--')
+# ax1.plot(omega/(2*np.pi), mu_real, color='red', linestyle='--')
 # ax1.plot(omega, 10*np.log10(omega**(-1.22)), color='red', linestyle='--')
+ax1.plot(omega, np.abs(mu_omega))
 
 
 ax2 = ax1.twinx()
@@ -86,9 +87,9 @@ ax2.scatter(1e3*frequencies, signal_close, label='close', color='k')
 # plt.plot(omega, mu_imaginary, color='green', linestyle='--')
 ax1.set_xscale('log')
 ax1.set_yscale('log')
-ax1.set_ylim(0, 2e5)
+ax1.set_ylim(1, 2e5)
 ax1.set_xlabel('Frequency (Hz)')
-ax1.set_ylabel(r'$\mu$')
+ax1.set_ylabel('Relative permeability')
 ax2.set_ylim(-80, -55)
 ax2.set_ylabel('PSD (dB)')
 

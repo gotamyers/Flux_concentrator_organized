@@ -60,6 +60,8 @@ for k in frequencies:
             quantized_data['Sens' + str(i + 1) + 'a' + str(k)] = B_ref/(np.sqrt(quantized_data['SNRV' + str(i + 1) + 'a' + str(k)]*RBW))*np.sqrt(quantized_data['SNN_' + str(i + 1) + 'a' + str(k)]/quantized_data['S21N_' + str(i + 1) + 'a' + str(k)])
 
 ########################################################################################################################
+signalV_far = np.zeros(len(frequencies))
+signalV_close = np.zeros(len(frequencies))
 s21_far = np.zeros(len(frequencies))
 s21_close = np.zeros(len(frequencies))
 sensitivity_far = np.zeros(len(frequencies))
@@ -67,6 +69,8 @@ sensitivity_close = np.zeros(len(frequencies))
 sens_far = np.zeros(len(frequencies))
 sens_close = np.zeros(len(frequencies))
 for i in range(len(frequencies)):
+    signalV_far[i] = quantized_data['signalV1a' + str(frequencies[i])] - quantized_data['noise_maxV1a' + str(frequencies[i])]
+    signalV_close[i] = quantized_data['signalV2a' + str(frequencies[i])] - quantized_data['noise_maxV1a' + str(frequencies[i])]
     s21_far[i] = quantized_data['S21_1a' + str(frequencies[i])]
     s21_close[i] = quantized_data['S21_2a' + str(frequencies[i])]
     sensitivity_far[i] = quantized_data['SensitivityV1a' + str(frequencies[i])]
@@ -78,6 +82,7 @@ for i in range(len(frequencies)):
         sens_far = quantized_data['Sens1a' + str(frequencies[i])]
         sens_close = quantized_data['Sens2a' + str(frequencies[i])]# * 4 * np.pi * 1e-7 * mu_real[
             #np.where(omega == (i - 9) * 100000)]
+enhanc_factor = signalV_close/signalV_far
 
 plt.figure(1)
 plt.scatter(1e3*frequencies, 0.9*s21_far, label='far', color='indianred')
@@ -110,14 +115,12 @@ plt.ylabel('Sensitivity (nT)')
 plt.title('Comparison')
 plt.legend(loc='lower left')
 
-# plt.figure(3)
-# noise1 = np.zeros(len(frequencies))
-# noise2 = np.zeros(len(frequencies))
-# for i in range(len(frequencies)):
-#     noise1[i] = quantized_data['noise_maxV1a' + str(frequencies[i])]
-#     noise2[i] = quantized_data['noise_maxV2a' + str(frequencies[i])]
-#
-# plt.scatter(1e3*frequencies, 10*np.log10(noise1), color='indianred')
-# plt.xscale('log')
+plt.figure(3)
+
+plt.scatter(1e3*frequencies, 10*np.log10(enhanc_factor), color='indianred')
+plt.xscale('log')
+plt.ylim(0, 40)
+plt.ylabel('Enhancement factor (dB)')
+plt.xlabel('Frequency (Hz)')
 
 plt.show()
