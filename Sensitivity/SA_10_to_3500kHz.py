@@ -118,12 +118,12 @@ for k in frequencies:
             data['SNRV'+str(p) + 'b' + str(k)] = 0
             data['SensitivityV'+str(p) + 'b' + str(k)] = 0
         else:
-            data['SensitivityV'+str(p) + 'b' + str(k)] = np.divide(B_ref1[ind_freq], np.sqrt(data['SNRV'+str(p) +'b' + str(k)]*RBW))
+            data['SensitivityV'+str(p) + 'b' + str(k)] = np.divide(B_ref2[ind_freq], np.sqrt(data['SNRV'+str(p) +'b' + str(k)]*RBW))
 
         if data['SNR'+str(p) + 'b' + str(k)]*RBW <= 0:
             data['Sensitivity'+str(p) + 'b' + str(k)] = 0
         else:
-            data['Sensitivity'+str(p) + 'b' + str(k)] = np.divide(B_ref1[ind_freq], np.sqrt(data['SNR'+str(p) + 'b' + str(k)]*RBW))
+            data['Sensitivity'+str(p) + 'b' + str(k)] = np.divide(B_ref2[ind_freq], np.sqrt(data['SNR'+str(p) + 'b' + str(k)]*RBW))
 
 ########################################################################################################################
 '''SAVE DICTIONARY'''
@@ -132,46 +132,55 @@ for k in frequencies:
 # pickle_out.close()
 ########################################################################################################################
 '''Plot signal'''
-# signal_far = np.zeros(len(frequencies))
-# signal_close = np.zeros(len(frequencies))
+signal_far1 = np.zeros(len(frequencies))
+signal_close1 = np.zeros(len(frequencies))
+signal_far2 = np.zeros(len(frequencies))
+signal_close2 = np.zeros(len(frequencies))
 # sensitivity_far = np.zeros(len(frequencies))
 # sensitivity_close = np.zeros(len(frequencies))
 # noise_maxV = np.zeros(len(frequencies))
-# for i in range(len(frequencies)):
-#     signal_far[i] = data['signalV1a' + str(frequencies[i])]
-#     signal_close[i] = data['signalV2a' + str(frequencies[i])]
+for i in range(len(frequencies)):
+    signal_far1[i] = data['signalV5a' + str(frequencies[i])]
+    signal_close1[i] = data['signalV5b' + str(frequencies[i])]
+    signal_far2[i] = data['signalV10a' + str(frequencies[i])]
+    signal_close2[i] = data['signalV10b' + str(frequencies[i])]
 #     sensitivity_far[i] = data['SensitivityV1a' + str(frequencies[i])]
 #     sensitivity_close[i] = data['SensitivityV2a' + str(frequencies[i])]
 #     noise_maxV[i] = data['noise_maxV1a' + str(frequencies[i])]
-# plt.figure(1)
+enhanc_factor1 = signal_close1/signal_far1
+enhanc_factor2 = signal_close2/signal_far2
+plt.figure(1)
 # for k in frequencies:
-# plt.scatter(frequencies, 10*np.log10(signal_far), label='far', color='firebrick')
-# plt.scatter(frequencies, 10*np.log10(signal_close), label='close', color='k')
+plt.scatter(frequencies, 10*np.log10(signal_far1), label='far5', color='firebrick')
+plt.scatter(frequencies, 10*np.log10(signal_close1), label='close5', color='royalblue')
+plt.scatter(frequencies, 10*np.log10(signal_far2), label='far10', color='red')
+plt.scatter(frequencies, 10*np.log10(signal_close2), label='close10', color='blue')
 # plt.plot(1e-3*data['noise500'][:, 0], 10*np.log10(data['noiseV500']), label='noise', color='cornflowerblue', linewidth=0.5, linestyle='--')
 # plt.scatter(frequencies, 10*np.log10(noise_maxV))
 # plt.xlim(9, 1000)
 # # plt.ylim(0., 2.e-6)
 # plt.ylim(-110, -50)
-# plt.xscale('log')
+plt.xscale('log')
 # # plt.yscale('log')
-# plt.legend(loc='upper right')
+plt.legend(loc='upper right')
 # plt.xlabel('Frequency (kHz)')
 # plt.ylabel('Power (dB)')
 # plt.title('Spectrum analyser signal')
 #
-# plt.figure(2)
-#
+plt.figure(2)
+plt.scatter(frequencies, 10*np.log10(enhanc_factor1), label='5', color='red')
+plt.scatter(frequencies, 10*np.log10(enhanc_factor2), label='10', color='k')
 # plt.scatter(frequencies, 1e9*sensitivity_far, label='far', color='firebrick')
 # plt.scatter(frequencies, 1e9*sensitivity_close, label='close', color='k')
 #
-# plt.xscale('log')
+plt.xscale('log')
 # plt.yscale('log')
 # plt.legend(loc='lower left')
 # plt.xlabel('Frequency (kHz)')
 # plt.ylabel('Sensitivity nT')
 # plt.title('Sensitivity')
 #
-# plt.show()
+plt.show()
 
 
 
