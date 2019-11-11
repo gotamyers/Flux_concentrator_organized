@@ -137,7 +137,7 @@ for k in frequencies:
 # pickle.dump(data, pickle_out)
 # pickle_out.close()
 ########################################################################################################################
-'''Plot signal'''
+'''Make things plottable'''
 signal_far1 = np.zeros(len(frequencies))
 signal_close1 = np.zeros(len(frequencies))
 signal_far2 = np.zeros(len(frequencies))
@@ -159,16 +159,26 @@ for i in range(len(frequencies)):
     noise_max10Va[i] = data['noise_maxV10a' + str(frequencies[i])]
     noise_max5Vb[i] = data['noise_maxV5b' + str(frequencies[i])]
     noise_max10Vb[i] = data['noise_maxV10b' + str(frequencies[i])]
-enhanc_factor1 = (signal_close1 - noise_max5Va)/signal_far1
-enhanc_factor2 = (signal_close2 - noise_max10Va)/signal_far2
+enhanc_factor1 = (signal_close1 - noise_max5Va)/(signal_far1)
+enhanc_factor2 = (signal_close2 - noise_max10Va)/(signal_far2)
+exclude_ind = np.where(enhanc_factor1 <=1)
+enhanc_factor1_del = np.delete(enhanc_factor1, exclude_ind, axis=0)
+enhanc_factor2_del = np.delete(enhanc_factor2, exclude_ind, axis=0)
+frequencies_del = np.delete(frequencies, exclude_ind, axis=0)
+
+'''Normalize by the B field'''
+B1 = np.delete(B_ref1/B_ref1[0], exclude_ind, axis=0)
+B2 = np.delete(B_ref2/B_ref2[0], exclude_ind, axis=0)
+########################################################################################################################
+'''Plot signal'''
 plt.figure(1)
 # for k in frequencies:
 plt.scatter(1e3*frequencies, 10*np.log10(signal_far1), label='far5', color='firebrick')
 plt.scatter(1e3*frequencies, 10*np.log10(signal_close1), label='close5', color='royalblue')
 plt.scatter(1e3*frequencies, 10*np.log10(signal_far2), label='far10', color='red')
 plt.scatter(1e3*frequencies, 10*np.log10(signal_close2), label='close10', color='blue')
-plt.plot(1e3*frequencies, 10*np.log10(noise_max5Va), label='noise5V', color='k')
-plt.plot(1e3*frequencies, 10*np.log10(noise_max10Va), label='noise10V', color='gray')
+# plt.plot(1e3*frequencies, 10*np.log10(noise_max5Va), label='noise5V', color='k')
+# plt.plot(1e3*frequencies, 10*np.log10(noise_max10Va), label='noise10V', color='gray')
 plt.plot(frequency_range, all_noise)
 # plt.plot(1e-3*data['noise500'][:, 0], 10*np.log10(data['noiseV500']), label='noise', color='cornflowerblue', linewidth=0.5, linestyle='--')
 # plt.scatter(frequencies, 10*np.log10(noise_maxV))
@@ -183,19 +193,24 @@ plt.legend(loc='upper right')
 # plt.title('Spectrum analyser signal')
 #
 plt.figure(2)
-plt.scatter(frequencies, 10*np.log10(enhanc_factor1), label='5', color='red')
-plt.scatter(frequencies, 10*np.log10(enhanc_factor2), label='10', color='k')
+plt.scatter(1e3*frequencies_del, 10*np.log10(enhanc_factor1_del), label='5', color='red')
+plt.scatter(1e3*frequencies_del, 10*np.log10(enhanc_factor2_del), label='10', color='k')
 # plt.scatter(frequencies, 1e9*sensitivity_far, label='far', color='firebrick')
 # plt.scatter(frequencies, 1e9*sensitivity_close, label='close', color='k')
 #
 plt.xscale('log')
+plt.ylim(0, 30)
 # plt.yscale('log')
 # plt.legend(loc='lower left')
 # plt.xlabel('Frequency (kHz)')
 # plt.ylabel('Sensitivity nT')
 # plt.title('Sensitivity')
-#
+plt.figure(3)
+# plt.scatter(1e3*frequencies_del, 10*np.log10(enhanc_factor1_del/B1), label='5', color='red')
+# plt.scatter(1e3*frequencies_del, 10*np.log10(enhanc_factor2_del/B2), label='5', color='k')
+plt.scatter(1e3*frequencies_del, B1)
+plt.xscale('log')
+# plt.ylim(0, 30)
+
 plt.show()
-
-
 
