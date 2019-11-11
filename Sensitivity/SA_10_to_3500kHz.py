@@ -44,6 +44,12 @@ for k in noise_frequencies:
         data['noise'+str(p) + str(k)] = np.array(df)
         data['noiseV'+str(p) + str(k)] = np.power(10, data['noise'+str(p) + str(k)][:, 1]/10)
 
+all_noise = data['noise5500'][:, 1]
+frequency_range = data['noise5500'][:, 0]
+for k in noise_frequencies[1:]:
+    frequency_range = np.append(frequency_range, data['noise5' + str(k)][:, 0])
+    all_noise = np.append(all_noise, data['noise5' + str(k)][:, 1])
+
 for k in frequencies:
     for p in [5, 10]:
     # with open('C:\\Users\\Fernando\\Documents\\Phd\\10thOct'
@@ -138,7 +144,10 @@ signal_far2 = np.zeros(len(frequencies))
 signal_close2 = np.zeros(len(frequencies))
 # sensitivity_far = np.zeros(len(frequencies))
 # sensitivity_close = np.zeros(len(frequencies))
-# noise_maxV = np.zeros(len(frequencies))
+noise_max5Va = np.zeros(len(frequencies))
+noise_max10Va = np.zeros(len(frequencies))
+noise_max5Vb = np.zeros(len(frequencies))
+noise_max10Vb = np.zeros(len(frequencies))
 for i in range(len(frequencies)):
     signal_far1[i] = data['signalV5a' + str(frequencies[i])]
     signal_close1[i] = data['signalV5b' + str(frequencies[i])]
@@ -146,18 +155,24 @@ for i in range(len(frequencies)):
     signal_close2[i] = data['signalV10b' + str(frequencies[i])]
 #     sensitivity_far[i] = data['SensitivityV1a' + str(frequencies[i])]
 #     sensitivity_close[i] = data['SensitivityV2a' + str(frequencies[i])]
-#     noise_maxV[i] = data['noise_maxV1a' + str(frequencies[i])]
-enhanc_factor1 = signal_close1/signal_far1
-enhanc_factor2 = signal_close2/signal_far2
+    noise_max5Va[i] = data['noise_maxV5a' + str(frequencies[i])]
+    noise_max10Va[i] = data['noise_maxV10a' + str(frequencies[i])]
+    noise_max5Vb[i] = data['noise_maxV5b' + str(frequencies[i])]
+    noise_max10Vb[i] = data['noise_maxV10b' + str(frequencies[i])]
+enhanc_factor1 = (signal_close1 - noise_max5Va)/signal_far1
+enhanc_factor2 = (signal_close2 - noise_max10Va)/signal_far2
 plt.figure(1)
 # for k in frequencies:
-plt.scatter(frequencies, 10*np.log10(signal_far1), label='far5', color='firebrick')
-plt.scatter(frequencies, 10*np.log10(signal_close1), label='close5', color='royalblue')
-plt.scatter(frequencies, 10*np.log10(signal_far2), label='far10', color='red')
-plt.scatter(frequencies, 10*np.log10(signal_close2), label='close10', color='blue')
+plt.scatter(1e3*frequencies, 10*np.log10(signal_far1), label='far5', color='firebrick')
+plt.scatter(1e3*frequencies, 10*np.log10(signal_close1), label='close5', color='royalblue')
+plt.scatter(1e3*frequencies, 10*np.log10(signal_far2), label='far10', color='red')
+plt.scatter(1e3*frequencies, 10*np.log10(signal_close2), label='close10', color='blue')
+plt.plot(1e3*frequencies, 10*np.log10(noise_max5Va), label='noise5V', color='k')
+plt.plot(1e3*frequencies, 10*np.log10(noise_max10Va), label='noise10V', color='gray')
+plt.plot(frequency_range, all_noise)
 # plt.plot(1e-3*data['noise500'][:, 0], 10*np.log10(data['noiseV500']), label='noise', color='cornflowerblue', linewidth=0.5, linestyle='--')
 # plt.scatter(frequencies, 10*np.log10(noise_maxV))
-# plt.xlim(9, 1000)
+plt.xlim(1e4, 1e7)
 # # plt.ylim(0., 2.e-6)
 # plt.ylim(-110, -50)
 plt.xscale('log')
