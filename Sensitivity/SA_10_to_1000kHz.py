@@ -104,6 +104,7 @@ for i in range(len(frequencies)):
     sensitivity_far[i] = data['SensitivityV1a' + str(frequencies[i])]
     sensitivity_close[i] = data['SensitivityV2a' + str(frequencies[i])]
     noise_maxV[i] = data['noise_maxV1a' + str(frequencies[i])]
+sens_enhanc = sensitivity_close/sensitivity_far
 plt.figure(1)
 # for k in frequencies:
 plt.scatter(frequencies, 10*np.log10(signal_far), label='far', color='firebrick')
@@ -131,6 +132,18 @@ plt.legend(loc='lower left')
 plt.xlabel('Frequency (kHz)')
 plt.ylabel('Sensitivity nT')
 plt.title('Sensitivity')
+
+plt.figure(3)
+
+plt.scatter(frequencies, 10*np.log10(sens_enhanc), color='firebrick')
+
+plt.xscale('log')
+# plt.yscale('log')
+plt.ylim(-20, 0)
+# plt.legend(loc='lower left')
+plt.xlabel('Frequency (kHz)')
+plt.ylabel('Enhancement (dB)')
+plt.title('Sensitivity enhancement')
 
 plt.show()
 
