@@ -175,7 +175,7 @@ data['Bmin_150_6dBm_close'] = np.multiply(np.sqrt(np.divide(data['SNN_noise_6dBm
 
 ########################################################################################################################
 '''SAVE DICTIONARY'''
-pickle_out = open("simple_sensitivity_2mm.pickle", "wb")
-pickle.dump(data, pickle_out)
-pickle_out.close()
+# pickle_out = open("simple_sensitivity_2mm.pickle", "wb")
+# pickle.dump(data, pickle_out)
+# pickle_out.close()
 ########################################################################################################################

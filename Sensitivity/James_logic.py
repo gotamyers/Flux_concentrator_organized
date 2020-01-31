@@ -77,8 +77,7 @@ for k in range(11):
 ymax = np.zeros(11)
 for k in range(11):
     data['Bmin' + str(k + 1)] = np.sqrt(np.divide(data['S_NN_' + str(k + 1)], data['S_21_' + str(k + 1)])) * B_ref
-    data['Bmin' + str(k + 1)] = np.multiply(
-        np.divide(data['Bmin' + str(k + 1)], np.sqrt(np.multiply(data['SNR' + str(k + 1)], RBW))), 1e9)
+    data['Bmin' + str(k + 1)] = np.multiply(np.divide(data['Bmin' + str(k + 1)], np.sqrt(np.multiply(data['SNR' + str(k + 1)], RBW))), 1e9)
     data['Bmin_min' + str(k + 1)] = data['Bmin' + str(k + 1)].min()
 
 ########################################################################################################################
