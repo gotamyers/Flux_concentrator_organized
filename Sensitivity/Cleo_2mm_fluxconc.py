@@ -24,11 +24,11 @@ B_ref = math.pow(4.5, 1.5) * mu0 * Ncoils * I_driven / radius
 ########################################################################################################################
 '''Read Spectrum analyzer, find SNR and calculate S_NN in not dB'''
 for i in [0, 5]:
-    for k in [3, 5]:
+    for k in [1, 2]:
         # with open('C:\\Users\\Fernando\\Documents\Phd\\7thAug'
         #           + '\\Absolute_sensitivity_080819_FG\\SSA_' + str(i) + str(k + 1) + '.csv') as a:
-        with open('C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Sensitivity_calculations\\254_4\\7thAug'
-                  + '\\AbsoluteSensitivities_080819_FG_JB\\SSA_' + str(i) + str(k) + '.csv') as a:
+        with open('C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Sensitivity_calculations\\254_4\\9thAug'
+                  + '\\Absolute_sensitivity_090819_FG\\SSA_' + str(i) + str(k) + '.csv') as a:
             df = csv.reader(a, delimiter=',')
             df_temp = []
             for row in df:
@@ -41,9 +41,9 @@ for i in [0, 5]:
             data['SSA_' + str(i) + str(k)] = np.reshape(np.array(df), (-1, 2))
         data['SSA_' + str(i) + str(k)] = np.array(df)
 
-ind_max = np.where(data['SSA_53'][:, 1] == np.amax(data['SSA_53'][:, 1]))
+ind_max = np.where(data['SSA_51'][:, 1] == np.amax(data['SSA_51'][:, 1]))
 # print(data['SSA_03'][ind_max, 0])
-for k in [3, 5]:
+for k in [1, 2]:
     data['signal' + str(k)] = data['SSA_5' + str(k)][300:450, 1].max()
     data['noise' + str(k)] = data['SSA_0' + str(k)][300:450, 1].max()
     data['SNR' + str(k)] = np.power(10, np.divide(data['signal' + str(k)] - data['noise' + str(k)], 10))
@@ -52,11 +52,11 @@ for k in [3, 5]:
 
 ########################################################################################################################
 '''Read NA saved data'''
-for k in [3, 5]:
+for k in [1, 2]:
     # with open('C:\\Users\\Fernando\\Documents\Phd\\7thAug'
     #           + '\\Absolute_sensitivity_080819_FG\\TRACE_' + str(i) + str(k + 1) + '.csv') as a:
-    with open('C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Sensitivity_calculations\\254_4\\7thAug'
-              + '\\Absolutesensitivities_080819_FG_JB\\TRACE0' + str(k) + '.csv') as a:
+    with open('C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Sensitivity_calculations\\254_4\\9thAug'
+              + '\\Absolute_sensitivity_090819_FG\\TRACE0' + str(k) + '.csv') as a:
         df = csv.reader(a, delimiter=',')
         df_temp = []
         for row in df:
@@ -73,28 +73,28 @@ for k in [3, 5]:
 
 
 '''Normalise S_NN and S_21 with the reference'''
-for k in [3, 5]:
+for k in [1, 2]:
     data['Snn' + str(k)] = data['Snn' + str(k)] / data['Snn' + str(k)][ind_max]
     data['S21_' + str(k)] = np.divide(data['S21_' + str(k)], data['S21_' + str(k)][ind_max])
 
 ########################################################################################################################
 '''Calculate the Sensitivity in function of frequency'''
 
-for k in [3, 5]:
+for k in [1, 2]:
     data['Bmin' + str(k)] = np.sqrt(np.divide(data['Snn' + str(k)], data['S21_' + str(k)]))*B_ref
     data['Bmin' + str(k)] = np.divide(data['Bmin' + str(k)], np.sqrt(np.multiply(data['SNR' + str(k)], RBW)))
 
 
 plt.figure(1)
 
-plt.plot(data['TRACE03'][:-1, 0], 1e6*data['Bmin3'][:-1], linestyle='-', color='blue', label='far')
-plt.plot(data['TRACE03'][:-1, 0], 1e6*data['Bmin5'][:-1], linestyle='-', color='black', label='close')
+plt.plot(data['TRACE01'][:-1, 0], 1e6*data['Bmin1'][:-1], linestyle='-', color='blue', label='far')
+plt.plot(data['TRACE01'][:-1, 0], 1e6*data['Bmin2'][:-1], linestyle='-', color='black', label='close')
 # plt.plot(data['TRACE03'][:-1, 0], data['Bmin53'][:-1], linestyle='-', color='red', label='close')
 
 plt.show()
 ########################################################################################################################
 '''SAVE DICTIONARY'''
-# pickle_out = open("sensitivity_Cleo_5mm.pickle", "wb")
+# pickle_out = open("sensitivity_Cleo_2mm.pickle", "wb")
 # pickle.dump(data, pickle_out)
 # pickle_out.close()
 ########################################################################################################################
