@@ -12,7 +12,8 @@ data5 = pickle.load(pickle_in)
 
 
 
-plt.figure(1)
+fig = plt.figure()
+ax = fig.add_subplot()
 
 plt.plot(1e-3*data2['TRACE01'][:-1, 0], 1e6*data2['Bmin1'][:-1], linestyle='-', color='blue', label='far')
 plt.plot(1e-3*data2['TRACE01'][:-1, 0], 1e6*data2['Bmin2'][:-1], linestyle='-', color='black', label='2 mm')
@@ -25,5 +26,8 @@ plt.xlabel('Frequency (kHz)')
 plt.ylabel(r'Sensitivity ($\mu$T/$\sqrt{Hz}$)')
 plt.title('Sensitivity comparison')
 plt.xlim(100, 1000)
+ax.tick_params(axis='x', direction='in')
+ax.tick_params(axis='y', direction='in')
+ax.tick_params(axis='y', which='minor', direction='in')
 
 plt.show()
