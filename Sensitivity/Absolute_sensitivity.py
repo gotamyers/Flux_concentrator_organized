@@ -21,6 +21,7 @@ I_driven11 = V_drive1 / math.sqrt(math.pow(R, 2) + math.pow((nu_ref1 * 2 * math.
 # I_driven11 = I_driven12 = I_driven21 = I_driven22 = 0.473
 I_driven12 = V_drive1 / math.sqrt(math.pow(R, 2) + math.pow((nu_ref2 * 2 * math.pi), 2) * math.pow(L, 2))  # Coils current
 B_ref11 = math.pow(4.5, 1.5) * mu0 * Ncoils * I_driven11 / radius
+print(B_ref11)
 B_ref12 = math.pow(4.5, 1.5) * mu0 * Ncoils * I_driven12 / radius
 I_driven21 = V_drive2 / math.sqrt(math.pow(R, 2) + math.pow((nu_ref1 * 2 * math.pi), 2) * math.pow(L, 2))  # Coils current
 I_driven22 = V_drive2 / math.sqrt(math.pow(R, 2) + math.pow((nu_ref2 * 2 * math.pi), 2) * math.pow(L, 2))  # Coils current
