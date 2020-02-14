@@ -85,15 +85,17 @@ for k in [3, 5]:
     data['Bmin' + str(k)] = np.divide(data['Bmin' + str(k)], np.sqrt(np.multiply(data['SNR' + str(k)], RBW)))
 
 
-plt.figure(1)
-
-plt.plot(data['TRACE03'][:-1, 0], 1e6*data['Bmin3'][:-1], linestyle='-', color='blue', label='far')
-plt.plot(data['TRACE03'][:-1, 0], 1e6*data['Bmin5'][:-1], linestyle='-', color='black', label='close')
+# plt.figure(1)
+#
+# plt.plot(data['TRACE03'][:-1, 0], 1e6*data['Bmin3'][:-1], linestyle='-', color='blue', label='far')
+# plt.plot(data['TRACE03'][:-1, 0], 1e6*data['Bmin5'][:-1], linestyle='-', color='black', label='close')
 # plt.plot(data['TRACE03'][:-1, 0], data['Bmin53'][:-1], linestyle='-', color='red', label='close')
 
-plt.show()
+# plt.show()
 ########################################################################################################################
 '''SAVE DICTIONARY'''
+'''You might want to take the # off after you make sure everything is working fine. This saves a dictionary, ie,
+saves the data for the plotting.'''
 # pickle_out = open("sensitivity_Cleo_5mm.pickle", "wb")
 # pickle.dump(data, pickle_out)
 # pickle_out.close()

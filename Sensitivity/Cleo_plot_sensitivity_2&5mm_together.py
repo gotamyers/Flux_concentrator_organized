@@ -3,12 +3,11 @@ import numpy as np
 import pickle
 import matplotlib.pyplot as plt
 
-pickle_in = open("sensitivity_Cleo_2mm.pickle", "rb")
+pickle_in = open("sensitivity_Cleo_2mm.pickle", "rb") #This thing reads the data proccessed in other scripts
 data2 = pickle.load(pickle_in)
 
 pickle_in = open("sensitivity_Cleo_5mm.pickle", "rb")
 data5 = pickle.load(pickle_in)
-
 
 
 
@@ -27,11 +26,11 @@ plt.ylabel(r'Sensitivity ($\mu$T/$\sqrt{Hz}$)', fontsize='18')
 plt.title('Sensitivity comparison', fontsize='18')
 plt.xlim(0, 1000)
 plt.tight_layout()
-ax.xaxis.set_major_locator(plt.MultipleLocator(200))
+ax.xaxis.set_major_locator(plt.MultipleLocator(200))#This controls the interval of the x-axis ticks. In this case is 200 kHz
 ax.tick_params(axis='x', direction='in', width=1, labelsize=16)
 ax.tick_params(axis='y', direction='in', width=1, labelsize=16)
 ax.tick_params(axis='y', which='minor', direction='in', width=1)
-for axis in ['top', 'bottom', 'left', 'right']:
+for axis in ['top', 'bottom', 'left', 'right']:#Control thickness of the axis lines
     ax.spines[axis].set_linewidth(1.5)
 
 plt.show()

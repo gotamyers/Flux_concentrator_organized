@@ -8,6 +8,7 @@ import numpy.polynomial.polynomial as poly
 data = {}
 
 power = [0.0, 0.25, 0.50, 0.75, 1.25, 1.50, 1.75]
+point = 20
 ########################################################################################################################
 '''Read data'''
 for k in range(7):
@@ -25,7 +26,7 @@ for k in range(7):
     data['LPD' + str(k + 1)] = np.array(df)
     data['LPD_V' + str(k + 1)] = np.power(10, data['LPD' + str(k + 1)][:, 1]/10)
 
-
+print(data['LPD' + str(k + 1)][point, 0])
 with open('C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Board_laser\\4thFeb2020'
           + '\\SSA_10.csv') as a:
     df = csv.reader(a, delimiter=',')
@@ -60,11 +61,12 @@ data['just_SA_V'] = np.power(10, data['just_SA'][:, 1] / 10)
 '''Plot signal'''
 colors = ['black', 'firebrick', 'sandybrown', 'olivedrab', 'lightblue', 'blue', 'darkviolet', 'pink']
 plt.figure(1)
-for k in range(7):
-    plt.plot(data['LPD' + str(k + 1)][:, 0], data['LPD' + str(k + 1)][:, 1], label=str(power[k]))
 plt.plot(data['SA_noise'][:, 0], data['SA_noise'][:, 1], label='Elec. noise')
+for k in range(7):
+    plt.plot(data['LPD' + str(k + 1)][:, 0], data['LPD' + str(k + 1)][:, 1], label=str(power[k]) + ' mW')
+
 plt.xlim(9000, 1e6)
-plt.ylim(-130, -80)
+plt.ylim(-125, -75)
 # plt.xscale('log')
 # plt.yscale('log')
 plt.legend(loc='upper right')
@@ -75,10 +77,10 @@ plt.title('Spectrum analyser signal')
 plt.figure(2)
 LPD_V_notdB = np.zeros(7)
 for k in range(7):
-    plt.scatter(power[k], data['LPD_V' + str(k + 1)][720], color='k')
-    LPD_V_notdB[k] = data['LPD_V' + str(k + 1)][720]
+    plt.scatter(power[k], data['LPD_V' + str(k + 1)][point], color='k')
+    LPD_V_notdB[k] = data['LPD_V' + str(k + 1)][point]
 # plt.xlim(9000, 100e6)
-plt.ylim(0, 1e-10)
+plt.ylim(0, 2e-9)
 # plt.xscale('log')
 # plt.yscale('log')
 plt.legend(loc='upper right')
@@ -98,7 +100,7 @@ plt.figure(3)
 plt.plot(data['just_SA'][:, 0], data['just_SA'][:, 1], label='SA noise')
 plt.plot(data['SA_noise'][:, 0], data['SA_noise'][:, 1], label='Elec. noise')
 plt.xlim(9000, 1e6)
-plt.ylim(-130, -80)
+plt.ylim(-125, -75)
 # plt.xscale('log')
 # plt.yscale('log')
 plt.legend(loc='upper right')

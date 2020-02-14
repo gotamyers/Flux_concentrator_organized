@@ -24,11 +24,11 @@ ax0.set_ylabel('Gain (dB)', fontsize='18')
 plt.xlim(0, 1000)
 plt.tight_layout()
 
-ax0.xaxis.set_major_locator(plt.MultipleLocator(200))
+ax0.xaxis.set_major_locator(plt.MultipleLocator(200))#This controls the interval of the x-axis ticks. In this case is 200 kHz
 ax0.tick_params(axis='x', direction='in', width=1, labelsize=16)
 ax0.tick_params(axis='y', direction='in', width=1, labelsize=16)
 ax0.tick_params(axis='y', which='minor', direction='in', width=1)
-for axis in ['top', 'bottom', 'left', 'right']:
+for axis in ['top', 'bottom', 'left', 'right']:#Control thickness of the axis lines
     ax0.spines[axis].set_linewidth(1.5)
 
 plt.legend(loc='upper right')
