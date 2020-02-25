@@ -9,22 +9,23 @@ import matplotlib.pyplot as plt
 # a Fourier Transform can be done.
 
 data = {}
+n_avg = 5      # number of averages
 
-# for i in range(8):
-#     '''Read data'''
-#     for k in range(5): #5 measurements with same configuration (k = 0 to 4)
-#         with open('C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Board_laser\\24thFeb2020'
-#                   + '\\Scope_' + str(i) + '_' + str(k) + '000.csv') as a:
-#
-#             df = csv.reader(a, delimiter=',')
-#             df_temp = []
-#             for row in df:
-#                 df_temp.append(row[3:])
-#             df = df_temp[:]
-#             for j in range(len(df)):
-#                 df[j] = [np.float(df[j][0]), np.float(df[j][1])]
-#
-#         data['scope_' + str(k)] = np.asarray(df)
+for i in range(8):
+    '''Read data'''
+    for k in range(n_avg): #5 measurements with same configuration (k = 0 to 4)
+        with open('C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Board_laser\\24thFeb2020'
+                  + '\\Scope_' + str(i) + '_' + str(k) + '000.csv') as a:
+
+            df = csv.reader(a, delimiter=',')
+            df_temp = []
+            for row in df:
+                df_temp.append(row[3:])
+            df = df_temp[:]
+            for j in range(len(df)):
+                df[j] = [np.float(df[j][0]), np.float(df[j][1])]
+
+        data['scope_' + str(k)] = np.asarray(df)
 #
 #     ####################################################################################################################
 #     '''SAVE DICTIONARY'''
@@ -38,7 +39,7 @@ data = {}
 # data_plot = {}
 # n_avg = 5      # number of averages
 # '''Read data'''
-# for k in range(5): #5 measurements with same configuration (k = 0 to 4)
+# for k in range(n_avg): #5 measurements with same configuration (k = 0 to 4)
 #     with open('C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Board_laser\\24thFeb2020'
 #               + '\\Scope_noise' + str(k) + '000.csv') as a:
 #

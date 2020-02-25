@@ -17,13 +17,13 @@ for i in range(8):
 
 
     '''F.T of the amplitude'''
-    for k in range(5):
+    for k in range(n_avg):
         data['FFT_scope_' + str(k)] = np.fft.fft(data['scope_' + str(k)][:, 1])
         data['FFT_scope_' + str(k) + '_theo'] = 2.0*(np.abs(data['FFT_scope_' + str(k)]/N))**2
 
     '''Averaging PSD'''
     soma = np.zeros(len(data['FFT_scope_0_theo']))
-    for k in range(5):
+    for k in range(n_avg):
         soma = soma + data['FFT_scope_' + str(k) + '_theo']
     data['avg_FFT_scope_theo'] = soma/n_avg
 
