@@ -19,7 +19,7 @@ for i in range(8):
     '''F.T of the amplitude'''
     for k in range(n_avg):
         data['FFT_scope_' + str(k)] = np.fft.fft(data['scope_' + str(k)][:, 1])
-        data['FFT_scope_' + str(k) + '_theo'] = 2.0*(np.abs(data['FFT_scope_' + str(k)]/N))**2
+        data['FFT_scope_' + str(k) + '_theo'] = 2.0*(np.abs(data['FFT_scope_' + str(k)]/np.sqrt(N)))**2
 
     '''Averaging PSD'''
     soma = np.zeros(len(data['FFT_scope_0_theo']))
@@ -32,7 +32,7 @@ for i in range(8):
 
     # ####################################################################################################################
     # '''SAVE DICTIONARY'''
-    # pickle_out = open("dB_avg_FFT_scope_theo_" + str(i) + ".pickle", "wb")
+    # pickle_out = open("dB_avg_FFT_scope_theo_" + str(i) + "(2).pickle", "wb")
     # pickle.dump(data_plot, pickle_out)
     # pickle_out.close()
     # ####################################################################################################################
