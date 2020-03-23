@@ -13,10 +13,18 @@ PSD2_not_dB = np.power(10, PSD2/10)
 PSD3_not_dB = np.power(10, PSD3/10)
 PSD4_not_dB = np.power(10, PSD4/10)
 
+PSD1_not_dB = PSD1_not_dB - PSD4_not_dB
+PSD2_not_dB = PSD2_not_dB - PSD4_not_dB
+PSD3_not_dB = PSD3_not_dB - PSD4_not_dB
 
-plt.plot(freq, PSD1)
-plt.plot(freq, PSD2)
-plt.plot(freq, PSD3)
-plt.plot(freq, PSD4)
+PSD1 = 10*np.log10(PSD1_not_dB)
+PSD2 = 10*np.log10(PSD2_not_dB)
+PSD3 = 10*np.log10(PSD3_not_dB)
+
+
+plt.plot(freq, PSD1, color='blue')
+plt.plot(freq, PSD2, color='red')
+plt.plot(freq, PSD3, color='olive')
+plt.plot(freq, PSD4, color='k')
 
 plt.show()
