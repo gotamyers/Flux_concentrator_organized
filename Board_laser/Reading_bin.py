@@ -7,13 +7,19 @@ def smooth(y, box_pts):
     return y_smooth
 
 
-n_smooth = 50
+n_smooth = 10
 
-data = np.fromfile("C:\\Users\\Fernando\\Documents\\Phd\\Board_laser\\21thMarch2020\\testPSD001.bin", dtype='float', count=-1)
+# data = np.fromfile("C:\\Users\\Fernando\\Documents\\Phd\\Board_laser\\21thMarch2020\\testPSD001.bin", dtype='float', count=-1)
+# PSD1 = data[2:]
+# PSD2 = np.fromfile("C:\\Users\\Fernando\\Documents\\Phd\\Board_laser\\21thMarch2020\\testPSD002.bin", dtype='float', count=-1)[2:]
+# PSD3 = np.fromfile("C:\\Users\\Fernando\\Documents\\Phd\\Board_laser\\21thMarch2020\\testPSD003.bin", dtype='float', count=-1)[2:]
+# PSD4 = np.fromfile("C:\\Users\\Fernando\\Documents\\Phd\\Board_laser\\21thMarch2020\\testPSD004.bin", dtype='float', count=-1)[2:]
+
+data = np.fromfile("C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Board_laser\\21thMar2020\\testPSD001.bin", dtype='float', count=-1)
 PSD1 = data[2:]
-PSD2 = np.fromfile("C:\\Users\\Fernando\\Documents\\Phd\\Board_laser\\21thMarch2020\\testPSD002.bin", dtype='float', count=-1)[2:]
-PSD3 = np.fromfile("C:\\Users\\Fernando\\Documents\\Phd\\Board_laser\\21thMarch2020\\testPSD003.bin", dtype='float', count=-1)[2:]
-PSD4 = np.fromfile("C:\\Users\\Fernando\\Documents\\Phd\\Board_laser\\21thMarch2020\\testPSD004.bin", dtype='float', count=-1)[2:]
+PSD2 = np.fromfile("C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Board_laser\\21thMar2020\\testPSD002.bin", dtype='float', count=-1)[2:]
+PSD3 = np.fromfile("C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Board_laser\\21thMar2020\\testPSD003.bin", dtype='float', count=-1)[2:]
+PSD4 = np.fromfile("C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Board_laser\\21thMar2020\\testPSD004.bin", dtype='float', count=-1)[2:]
 
 f0 = data[0]
 df = data[1]
@@ -37,5 +43,6 @@ plt.plot(freq, PSD1, color='blue')
 plt.plot(freq, PSD2, color='red')
 plt.plot(freq, PSD3, color='k')
 plt.plot(freq, PSD4, color='olive')
+plt.xlim(0, 2e4)
 
 plt.show()
