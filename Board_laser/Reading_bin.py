@@ -85,35 +85,35 @@ for k in range(len(data['freq'])):
 ratio_amp = coef_x_square_amp/coef_x_lin_amp
 
 
-# a = 0
-# plt.figure(1)
-# for k in [6, 9, 11, 13, 15, 17]:
-#     plt.plot(data["freq"], data["smooth_dB_PSD_phase" + str(k)], label=str(power[a]))
-#     a = a+1
-# plt.plot(data["freq"], data["smooth_dB_shot_noise"], label='shot_noise')
-# plt.plot(data["freq"], data["smooth_dB_elec_noise"], label='elec_noise')
-#
-# plt.xlim(0, 2e5)
-#
-# plt.xlabel('Frequency (Hz)')
-# plt.ylabel('PSD (dB)')
-# plt.title("Phase noise")
-# plt.legend(loc='upper right')
-#
-# a=0
-# plt.figure(2)
-# for k in [7, 10, 12, 14, 16, 18]:
-#     plt.plot(data["freq"], data["smooth_dB_PSD_amp" + str(k)], label=str(power[a]))
-#     a = a+1
-# plt.plot(data["freq"], data["smooth_dB_shot_noise"], label='shot_noise')
-# plt.plot(data["freq"], data["smooth_dB_elec_noise"], label='elec_noise')
-#
-# plt.xlim(0, 2e5)
-#
-# plt.xlabel('Frequency (Hz)')
-# plt.ylabel('PSD (dB)')
-# plt.title("Amplitude noise")
-# plt.legend(loc='upper right')
+a = 0
+plt.figure(1)
+for k in [6, 9, 11, 13, 15, 17]:
+    plt.plot(data["freq"], data["smooth_dB_PSD_phase" + str(k)], label=str(power[a]))
+    a = a+1
+plt.plot(data["freq"], data["smooth_dB_shot_noise"], label='shot_noise')
+plt.plot(data["freq"], data["smooth_dB_elec_noise"], label='elec_noise')
+
+plt.xlim(0, 2e5)
+
+plt.xlabel('Frequency (Hz)')
+plt.ylabel('PSD (dB)')
+plt.title("Phase noise")
+plt.legend(loc='upper right')
+
+a=0
+plt.figure(2)
+for k in [7, 10, 12, 14, 16, 18]:
+    plt.plot(data["freq"], data["smooth_dB_PSD_amp" + str(k)], label=str(power[a]))
+    a = a+1
+plt.plot(data["freq"], data["smooth_dB_shot_noise"], label='shot_noise')
+plt.plot(data["freq"], data["smooth_dB_elec_noise"], label='elec_noise')
+
+plt.xlim(0, 2e5)
+
+plt.xlabel('Frequency (Hz)')
+plt.ylabel('PSD (dB)')
+plt.title("Amplitude noise")
+plt.legend(loc='upper right')
 #
 plt.figure(3)
 plt.plot(data['freq'], coef_x_square_phase, label='square', color='b')
