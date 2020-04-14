@@ -121,7 +121,7 @@ plt.plot(data['freq'], coef_x_lin_phase, label='linear', color='red')
 # plt.plot(data['freq'], ratio_phase)
 
 plt.xlim(0, 2e5)
-plt.ylim(0, 1e-11)
+plt.ylim(-1e-11, 0.6e-10)
 
 plt.xlabel('Frequency (Hz)')
 plt.ylabel('1/mW')
@@ -134,7 +134,7 @@ plt.plot(data['freq'], coef_x_lin_amp, label='linear', color='red')
 # plt.plot(data['freq'], ratio_amp)
 
 plt.xlim(0, 2e5)
-plt.ylim(0, 1e-11)
+plt.ylim(-1e-14, 0.6e-12)
 
 plt.xlabel('Frequency (Hz)')
 plt.ylabel('1/mW')
