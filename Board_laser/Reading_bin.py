@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pickle
 import numpy.polynomial.polynomial as poly
+import scipy.optimize
 
 def smooth(y, box_pts):
     box = np.ones(box_pts)/box_pts
@@ -9,9 +10,14 @@ def smooth(y, box_pts):
     return y_smooth
 
 
+def parabola(x, a, b):
+    return a*x**2 + b*x
+
 data = {}
 n_smooth = 100
-power = [192, 152.8, 120, 91.4, 63.4, 33.27]
+power = [192, 152.8, 120, 91.4, 63.4, 33.27] #measured in mV (oscilloscope
+power = np.asarray(power)*1e-3
+power_w = np.asarray(power)/4e4
 
 ref_data = np.fromfile("C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Board_laser\\9thApr2020\\testPSD020.bin", dtype='float', count=-1)
 data["freq"] = ref_data[0] + ref_data[1]*np.array(range(len(ref_data[2:])))
@@ -56,11 +62,11 @@ for k in range(len(data['freq'])):
         a=a+1
 
     '''Fitting polynomial to figure (2)'''
-    x_new = np.linspace(power[0], power[-1], num=len(power) * 10)
-    coefs = poly.polyfit(power, LPD_V_notdB, 2)
-    ffit = poly.Polynomial(coefs)
-    # plt.plot(x_new, ffit(x_new))
-    coef_x_square_phase[k] = coefs[2]
+    x_new = np.linspace(power[0], power[-1], num=len(power) * 50)
+    coefs, pcov = scipy.optimize.curve_fit(parabola, power, LPD_V_notdB)
+    # coefs = poly.polyfit(power, LPD_V_notdB, 2)
+    # ffit = poly.Polynomial(coefs)
+    coef_x_square_phase[k] = coefs[0]
     coef_x_lin_phase[k] = coefs[1]
 
 ratio_phase = coef_x_square_phase/coef_x_lin_phase
@@ -75,7 +81,7 @@ for k in range(len(data['freq'])):
         a=a+1
 
     '''Fitting polynomial to figure (2)'''
-    x_new = np.linspace(power[0], power[-1], num=len(power) * 10)
+    x_new = np.linspace(power[0], power[-1], num=len(power) * 50)
     coefs = poly.polyfit(power, LPD_V_notdB, 2)
     ffit = poly.Polynomial(coefs)
     # plt.plot(x_new, ffit(x_new))
@@ -88,7 +94,7 @@ ratio_amp = coef_x_square_amp/coef_x_lin_amp
 a = 0
 plt.figure(1)
 for k in [6, 9, 11, 13, 15, 17]:
-    plt.plot(data["freq"], data["smooth_dB_PSD_phase" + str(k)], label=str(power[a]))
+    plt.plot(data["freq"], data["smooth_dB_PSD_phase" + str(k)], label=str(power[a])+" um")
     a = a+1
 plt.plot(data["freq"], data["smooth_dB_shot_noise"], label='shot_noise')
 plt.plot(data["freq"], data["smooth_dB_elec_noise"], label='elec_noise')
@@ -103,7 +109,7 @@ plt.legend(loc='upper right')
 a=0
 plt.figure(2)
 for k in [7, 10, 12, 14, 16, 18]:
-    plt.plot(data["freq"], data["smooth_dB_PSD_amp" + str(k)], label=str(power[a]))
+    plt.plot(data["freq"], data["smooth_dB_PSD_amp" + str(k)], label=str(power[a])+" um")
     a = a+1
 plt.plot(data["freq"], data["smooth_dB_shot_noise"], label='shot_noise')
 plt.plot(data["freq"], data["smooth_dB_elec_noise"], label='elec_noise')
@@ -121,7 +127,7 @@ plt.plot(data['freq'], coef_x_lin_phase, label='linear', color='red')
 # plt.plot(data['freq'], ratio_phase)
 
 plt.xlim(0, 2e5)
-plt.ylim(-1e-11, 0.6e-10)
+# plt.ylim(-1e-16, 1e-13)
 
 plt.xlabel('Frequency (Hz)')
 plt.ylabel('1/mW')
@@ -134,7 +140,7 @@ plt.plot(data['freq'], coef_x_lin_amp, label='linear', color='red')
 # plt.plot(data['freq'], ratio_amp)
 
 plt.xlim(0, 2e5)
-plt.ylim(-1e-14, 0.6e-12)
+# plt.ylim(-1e-14, 1e-14)
 
 plt.xlabel('Frequency (Hz)')
 plt.ylabel('1/mW')
