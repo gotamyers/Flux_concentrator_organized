@@ -14,30 +14,30 @@ def parabola(x, a, b):
     return a*x + b
 
 data = {}
-n_smooth = 100
-power = [192, 152.8, 120, 91.4, 63.4, 33.27] #measured in mV (oscilloscope
-power = np.asarray(power)*2.0 + 16.0 #2 is because chao said the power is two times what was measured.16 is the offset in our case
+n_smooth = 70
+power = [14.55, 20., 25., 30., 36.] #measured in mV (oscilloscope)
+power = np.asarray(power)*2.0  #2 is because chao said the power is two times what was measured.16 is the offset in our case
 power_w = np.asarray(power)/146.0
 
-ref_data = np.fromfile("C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Board_laser\\9thApr2020\\testPSD020.bin", dtype='float', count=-1)
+ref_data = np.fromfile("C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Board_laser\\18thMay2020\\testPSD024.bin", dtype='float', count=-1)
 data["freq"] = ref_data[0] + ref_data[1]*np.array(range(len(ref_data[2:])))
-data["shot_noise"] = np.fromfile("C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Board_laser\\9thApr2020\\testPSD020.bin", dtype='float', count=-1)[2:]
-data["elec_noise"] = np.fromfile("C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Board_laser\\9thApr2020\\testPSD021.bin", dtype='float', count=-1)[2:]
+data["shot_noise"] = np.fromfile("C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Board_laser\\18thMay2020\\testPSD024.bin", dtype='float', count=-1)[2:]
+data["elec_noise"] = np.fromfile("C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Board_laser\\18thMay2020\\testPSD028.bin", dtype='float', count=-1)[2:]
 
 data["smooth_dB_shot_noise"] = 10*np.log10(smooth(np.power(10, data["shot_noise"]/10), n_smooth))
 data["smooth_dB_elec_noise"] = 10*np.log10(smooth(np.power(10, data["elec_noise"]/10), n_smooth))
 
-for k in [6, 9, 11, 13, 15, 17]:
+for k in [13, 16, 17, 21, 22]:
     data["PSD_phase" + str(k)] = np.fromfile(
-        "C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Board_laser\\9thApr2020\\testPSD0{0}.bin".format(
+        "C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Board_laser\\18thMay2020\\testPSD0{0}.bin".format(
             "{:02d}".format(k)), dtype='float', count=-1)[2:]
 
     data["smooth_PSD_phase" + str(k)] = smooth(np.power(10, data["PSD_phase" + str(k)]/10), n_smooth)
     data["smooth_dB_PSD_phase" + str(k)] = 10*np.log10(data["smooth_PSD_phase" + str(k)])
 
-for k in [7, 10, 12, 14, 19, 18]:
+for k in [14, 15, 18, 19, 23]:
     data["PSD_amp" + str(k)] = np.fromfile(
-        "C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Board_laser\\9thApr2020\\testPSD0{0}.bin".format(
+        "C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Board_laser\\18thMay2020\\testPSD0{0}.bin".format(
             "{:02d}".format(k)), dtype='float', count=-1)[2:]
 
     data["smooth_PSD_amp" + str(k)] = smooth(np.power(10, data["PSD_amp" + str(k)]/10), n_smooth)
@@ -57,7 +57,7 @@ coef_x_lin_phase = np.zeros(len(data["freq"]))
 for k in range(len(data['freq'])):
     LPD_V_notdB = np.zeros(len(power_w))
     a=0
-    for i in [6, 9, 11, 13, 15, 17]:
+    for i in [13, 16, 17, 21, 22]:
         LPD_V_notdB[a] = data["smooth_PSD_phase" + str(i)][k]
         a=a+1
 
@@ -76,7 +76,7 @@ coef_x_lin_amp = np.zeros(len(data["freq"]))
 for k in range(len(data['freq'])):
     LPD_V_notdB = np.zeros(len(power))
     a=0
-    for i in [7, 10, 12, 14, 19, 18]:
+    for i in [14, 15, 18, 19, 23]:
         LPD_V_notdB[a] = data["smooth_PSD_amp" + str(i)][k]
         a=a+1
 
@@ -91,13 +91,13 @@ ratio_amp = coef_x_square_amp/coef_x_lin_amp
 
 a = 0
 plt.figure(1)
-for k in [6, 9, 11, 13, 15, 17]:
+for k in [13, 16, 17, 21, 22]:
     plt.plot(data["freq"], data["smooth_dB_PSD_phase" + str(k)], label=str(round(power_w[a], 2)) + " uW")
     a = a+1
 plt.plot(data["freq"], data["smooth_dB_shot_noise"], label='shot_noise')
 plt.plot(data["freq"], data["smooth_dB_elec_noise"], label='elec_noise')
 
-plt.xlim(0, 1.2e6)
+plt.xlim(0, 100e3)
 
 plt.xlabel('Frequency (Hz)')
 plt.ylabel('PSD (dB)')
@@ -106,71 +106,99 @@ plt.legend(loc='upper right')
 
 a=0
 plt.figure(2)
-for k in [7, 10, 12, 14, 19, 18]:
+for k in [14, 15, 18, 19, 23]:
     plt.plot(data["freq"], data["smooth_dB_PSD_amp" + str(k)], label=str(round(power_w[a], 2)) + " uW")
     a = a+1
 plt.plot(data["freq"], data["smooth_dB_shot_noise"], label='shot_noise')
 plt.plot(data["freq"], data["smooth_dB_elec_noise"], label='elec_noise')
 
-plt.xlim(0, 1.2e6)
+plt.xlim(0, 100e3)
 
 plt.xlabel('Frequency (Hz)')
 plt.ylabel('PSD (dB)')
 plt.title("Amplitude noise")
 plt.legend(loc='upper right')
 #
-plt.figure(3)
-plt.plot(data['freq'], coef_x_square_phase, label='linear', color='red')
-plt.plot(data['freq'], coef_x_lin_phase, label='constant', color='k')
-# plt.plot(data['freq'], ratio_phase)
+# plt.figure(3)
+# plt.plot(data['freq'], coef_x_square_phase, label='linear', color='red')
+# plt.plot(data['freq'], coef_x_lin_phase, label='constant', color='k')
+# # plt.plot(data['freq'], ratio_phase)
+#
+# plt.xlim(0, 2e5)
+# plt.ylim(-3e-10, 2e-9)
+#
+# plt.xlabel('Frequency (Hz)')
+# plt.ylabel('1/mW')
+# plt.title("Phase noise coefficients")
+# plt.legend(loc='upper right')
+#
+# plt.figure(4)
+# plt.plot(data['freq'], coef_x_square_amp, label='linear', color='red')
+# plt.plot(data['freq'], coef_x_lin_amp, label='constant', color='k')
+# # plt.plot(data['freq'], ratio_amp)
+#
+# plt.xlim(0, 2e5)
+# plt.ylim(-3e-10, 2e-10)
+#
+# plt.xlabel('Frequency (Hz)')
+# plt.ylabel('1/mW')
+# plt.title("Amplitude noise coefficients")
+# plt.legend(loc='upper right')
+#
+# plt.figure(5)
+# plt.plot(data['freq'], coef_x_square_amp, label='amp', color='red')
+# plt.plot(data['freq'], coef_x_square_phase, label='phase', color='k')
+# # plt.plot(data['freq'], ratio_amp)
+#
+# plt.xlim(0, 2e5)
+# plt.ylim(-1e-10, 2e-9)
+#
+# plt.xlabel('Frequency (Hz)')
+# plt.ylabel('1/mW')
+# plt.title("Linear noise coefficients")
+# plt.legend(loc='upper right')
+#
+# plt.figure(6)
+# plt.plot(data['freq'], coef_x_lin_amp, label='amp', color='red')
+# plt.plot(data['freq'], coef_x_lin_phase, label='phase', color='k')
+# # plt.plot(data['freq'], ratio_amp)
+#
+# plt.xlim(0, 2e5)
+# plt.ylim(-3e-10, 1e-9)
+#
+# plt.xlabel('Frequency (Hz)')
+# plt.ylabel('1/mW')
+# plt.title("Constant noise coefficients")
+# plt.legend(loc='upper right')
 
-plt.xlim(0, 2e5)
-plt.ylim(-3e-10, 2e-9)
+a = 0
+plt.figure(7)
+for k in [13, 16, 17, 21, 22]:
+    plt.plot(data["freq"], data["PSD_phase" + str(k)], label=str(round(power_w[a], 2)) + " uW")
+    a = a+1
+plt.plot(data["freq"], data["shot_noise"], label='shot_noise')
+plt.plot(data["freq"], data["elec_noise"], label='elec_noise')
+
+plt.xlim(0, 100e3)
 
 plt.xlabel('Frequency (Hz)')
-plt.ylabel('1/mW')
-plt.title("Phase noise coefficients")
+plt.ylabel('PSD (dB)')
+plt.title("Phase noise")
 plt.legend(loc='upper right')
 
-plt.figure(4)
-plt.plot(data['freq'], coef_x_square_amp, label='linear', color='red')
-plt.plot(data['freq'], coef_x_lin_amp, label='constant', color='k')
-# plt.plot(data['freq'], ratio_amp)
+a=0
+plt.figure(8)
+for k in [14, 15, 18, 19, 23]:
+    plt.plot(data["freq"], data["PSD_amp" + str(k)], label=str(round(power_w[a], 2)) + " uW")
+    a = a+1
+plt.plot(data["freq"], data["shot_noise"], label='shot_noise')
+plt.plot(data["freq"], data["elec_noise"], label='elec_noise')
 
-plt.xlim(0, 2e5)
-plt.ylim(-3e-10, 2e-10)
+plt.xlim(0, 100e3)
 
 plt.xlabel('Frequency (Hz)')
-plt.ylabel('1/mW')
-plt.title("Amplitude noise coefficients")
+plt.ylabel('PSD (dB)')
+plt.title("Amplitude noise")
 plt.legend(loc='upper right')
-
-plt.figure(5)
-plt.plot(data['freq'], coef_x_square_amp, label='amp', color='red')
-plt.plot(data['freq'], coef_x_square_phase, label='phase', color='k')
-# plt.plot(data['freq'], ratio_amp)
-
-plt.xlim(0, 2e5)
-plt.ylim(-1e-10, 2e-9)
-
-plt.xlabel('Frequency (Hz)')
-plt.ylabel('1/mW')
-plt.title("Linear noise coefficients")
-plt.legend(loc='upper right')
-
-plt.figure(6)
-plt.plot(data['freq'], coef_x_lin_amp, label='amp', color='red')
-plt.plot(data['freq'], coef_x_lin_phase, label='phase', color='k')
-# plt.plot(data['freq'], ratio_amp)
-
-plt.xlim(0, 2e5)
-plt.ylim(-3e-10, 1e-9)
-
-plt.xlabel('Frequency (Hz)')
-plt.ylabel('1/mW')
-plt.title("Constant noise coefficients")
-plt.legend(loc='upper right')
-
-
 
 plt.show()
