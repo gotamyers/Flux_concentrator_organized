@@ -10,8 +10,8 @@ def smooth(y, box_pts):
     return y_smooth
 
 
-def parabola(x, a, b):
-    return a*x + b
+def parabola(x, a, b, c):
+    return a*x**2 + b*x + c
 
 data = {}
 n_smooth = 70
@@ -43,16 +43,12 @@ for k in [14, 15, 18, 19, 23]:
     data["smooth_PSD_amp" + str(k)] = smooth(np.power(10, data["PSD_amp" + str(k)]/10), n_smooth)
     data["smooth_dB_PSD_amp" + str(k)] = 10*np.log10(data["smooth_PSD_amp" + str(k)])
 
-########################################################################################################################
-'''SAVE DICTIONARY'''
-# pickle_out = open("phase_amp_noise_board_laser.pickle", "wb")
-# pickle.dump(data, pickle_out)
-# pickle_out.close()
-########################################################################################################################
+
 '''fit coefficients for quantum and classical noise'''
 
 coef_x_square_phase = np.zeros(len(data["freq"]))
 coef_x_lin_phase = np.zeros(len(data["freq"]))
+coef_x_constant_phase = np.zeros(len(data["freq"]))
 
 for k in range(len(data['freq'])):
     LPD_V_notdB = np.zeros(len(power_w))
@@ -63,16 +59,18 @@ for k in range(len(data['freq'])):
 
     '''Fitting polynomial to figure (2)'''
     x_new = np.linspace(power_w[0], power_w[-1], num=len(power) * 50)
-    coefs, pcov = scipy.optimize.curve_fit(parabola, power_w, LPD_V_notdB)
+    coefs, pcov = scipy.optimize.curve_fit(parabola, power_w, LPD_V_notdB, bounds=(0, [1., 1., 1e-13]))
     # coefs = poly.polyfit(power, LPD_V_notdB, 2)
     # ffit = poly.Polynomial(coefs)
     coef_x_square_phase[k] = coefs[0]
     coef_x_lin_phase[k] = coefs[1]
+    coef_x_constant_phase[k] = coefs[2]
 
 ratio_phase = coef_x_square_phase/coef_x_lin_phase
 
 coef_x_square_amp = np.zeros(len(data["freq"]))
 coef_x_lin_amp = np.zeros(len(data["freq"]))
+coef_x_constant_amp = np.zeros(len(data["freq"]))
 for k in range(len(data['freq'])):
     LPD_V_notdB = np.zeros(len(power))
     a=0
@@ -82,80 +80,105 @@ for k in range(len(data['freq'])):
 
     '''Fitting polynomial to figure (2)'''
     x_new = np.linspace(power_w[0], power_w[-1], num=len(power) * 50)
-    coefs, pcov = scipy.optimize.curve_fit(parabola, power_w, LPD_V_notdB)
+    coefs, pcov = scipy.optimize.curve_fit(parabola, power_w, LPD_V_notdB, bounds=(0, [1., 1., 1e-13]))
     coef_x_square_amp[k] = coefs[0]
     coef_x_lin_amp[k] = coefs[1]
+    coef_x_constant_amp[k] = coefs[2]
 
 ratio_amp = coef_x_square_amp/coef_x_lin_amp
 
+data['coef_x_square_amp'] = coef_x_square_amp
+data['coef_x_lin_amp'] = coef_x_lin_amp
+data['coef_x_constant_amp'] = coef_x_constant_amp
 
-a = 0
-plt.figure(1)
-for k in [13, 16, 17, 21, 22]:
-    plt.plot(data["freq"], data["smooth_dB_PSD_phase" + str(k)], label=str(round(power_w[a], 2)) + " uW")
-    a = a+1
-plt.plot(data["freq"], data["smooth_dB_shot_noise"], label='shot_noise')
-plt.plot(data["freq"], data["smooth_dB_elec_noise"], label='elec_noise')
+data['coef_x_square_phase'] = coef_x_square_phase
+data['coef_x_lin_phase'] = coef_x_lin_amp
+data['coef_x_constant_phase'] = coef_x_constant_phase
 
-plt.xlim(0, 100e3)
+########################################################################################################################
+'''SAVE DICTIONARY'''
+pickle_out = open("noise_board_laser.pickle", "wb")
+pickle.dump(data, pickle_out)
+pickle_out.close()
+########################################################################################################################
 
-plt.xlabel('Frequency (Hz)')
-plt.ylabel('PSD (dB)')
-plt.title("Phase noise")
-plt.legend(loc='upper right')
 
-a=0
-plt.figure(2)
-for k in [14, 15, 18, 19, 23]:
-    plt.plot(data["freq"], data["smooth_dB_PSD_amp" + str(k)], label=str(round(power_w[a], 2)) + " uW")
-    a = a+1
-plt.plot(data["freq"], data["smooth_dB_shot_noise"], label='shot_noise')
-plt.plot(data["freq"], data["smooth_dB_elec_noise"], label='elec_noise')
-
-plt.xlim(0, 100e3)
-
-plt.xlabel('Frequency (Hz)')
-plt.ylabel('PSD (dB)')
-plt.title("Amplitude noise")
-plt.legend(loc='upper right')
+# a = 0
+# plt.figure(1)
+# for k in [13, 16, 17, 21, 22]:
+#     plt.plot(data["freq"], data["smooth_dB_PSD_phase" + str(k)], label=str(round(power_w[a], 2)) + " uW")
+#     a = a+1
+# plt.plot(data["freq"], data["smooth_dB_shot_noise"], label='shot_noise')
+# plt.plot(data["freq"], data["smooth_dB_elec_noise"], label='elec_noise')
 #
-# plt.figure(3)
-# plt.plot(data['freq'], coef_x_square_phase, label='linear', color='red')
-# plt.plot(data['freq'], coef_x_lin_phase, label='constant', color='k')
-# # plt.plot(data['freq'], ratio_phase)
-#
-# plt.xlim(0, 2e5)
-# plt.ylim(-3e-10, 2e-9)
+# plt.ylim(-150, -30)
+# plt.xlim(1, 1e6)
+# plt.xscale('log')
 #
 # plt.xlabel('Frequency (Hz)')
-# plt.ylabel('1/mW')
-# plt.title("Phase noise coefficients")
+# plt.ylabel('PSD (dB)')
+# plt.title("Phase noise")
 # plt.legend(loc='upper right')
+
+# a=0
+# plt.figure(2)
+# for k in [14, 15, 18, 19, 23]:
+#     plt.plot(data["freq"], data["smooth_dB_PSD_amp" + str(k)], label=str(round(power_w[a], 2)) + " uW")
+#     a = a+1
+# plt.plot(data["freq"], data["smooth_dB_shot_noise"], label='shot_noise')
+# plt.plot(data["freq"], data["smooth_dB_elec_noise"], label='elec_noise')
 #
-# plt.figure(4)
-# plt.plot(data['freq'], coef_x_square_amp, label='linear', color='red')
-# plt.plot(data['freq'], coef_x_lin_amp, label='constant', color='k')
-# # plt.plot(data['freq'], ratio_amp)
-#
-# plt.xlim(0, 2e5)
-# plt.ylim(-3e-10, 2e-10)
+# plt.ylim(-150, -30)
+# plt.xlim(10, 100e3)
+# plt.xscale('log')
 #
 # plt.xlabel('Frequency (Hz)')
-# plt.ylabel('1/mW')
-# plt.title("Amplitude noise coefficients")
+# plt.ylabel('PSD (dB)')
+# plt.title("Amplitude noise")
 # plt.legend(loc='upper right')
-#
+
+plt.figure(3)
+plt.plot(data['freq'], coef_x_square_phase, label='square', color='red')
+plt.plot(data['freq'], coef_x_lin_phase, label='linear', color='k')
+plt.plot(data['freq'], coef_x_constant_phase, label='constant', color='blue')
+# plt.plot(data['freq'], ratio_phase)
+
+plt.xlim(1, 1e6)
+# plt.ylim(-4e-9, 4e-9)
+plt.xscale('log')
+
+plt.xlabel('Frequency (Hz)')
+plt.ylabel('1/mW')
+plt.title("Phase noise coefficients")
+plt.legend(loc='upper right')
+
+plt.figure(4)
+plt.plot(data['freq'], coef_x_square_amp, label='square', color='red')
+plt.plot(data['freq'], coef_x_lin_amp, label='linear', color='k')
+plt.plot(data['freq'], coef_x_constant_amp, label='constant', color='blue')
+# plt.plot(data['freq'], ratio_amp)
+
+plt.xlim(1, 1e6)
+# plt.ylim(-2e-10, 2e-10)
+plt.xscale('log')
+
+plt.xlabel('Frequency (Hz)')
+plt.ylabel('1/mW')
+plt.title("Amplitude noise coefficients")
+plt.legend(loc='upper right')
+
 # plt.figure(5)
 # plt.plot(data['freq'], coef_x_square_amp, label='amp', color='red')
 # plt.plot(data['freq'], coef_x_square_phase, label='phase', color='k')
 # # plt.plot(data['freq'], ratio_amp)
 #
-# plt.xlim(0, 2e5)
-# plt.ylim(-1e-10, 2e-9)
+# plt.xlim(1, 1e6)
+# plt.ylim(0, 5e-9)
+# plt.xscale('log')
 #
 # plt.xlabel('Frequency (Hz)')
 # plt.ylabel('1/mW')
-# plt.title("Linear noise coefficients")
+# plt.title("Square noise coefficients")
 # plt.legend(loc='upper right')
 #
 # plt.figure(6)
@@ -163,42 +186,47 @@ plt.legend(loc='upper right')
 # plt.plot(data['freq'], coef_x_lin_phase, label='phase', color='k')
 # # plt.plot(data['freq'], ratio_amp)
 #
-# plt.xlim(0, 2e5)
-# plt.ylim(-3e-10, 1e-9)
+# plt.xlim(1, 1e6)
+# plt.ylim(-5e-11, 5e-10)
+# plt.xscale('log')
 #
 # plt.xlabel('Frequency (Hz)')
 # plt.ylabel('1/mW')
-# plt.title("Constant noise coefficients")
+# plt.title("Linear noise coefficients")
 # plt.legend(loc='upper right')
 
-a = 0
-plt.figure(7)
-for k in [13, 16, 17, 21, 22]:
-    plt.plot(data["freq"], data["PSD_phase" + str(k)], label=str(round(power_w[a], 2)) + " uW")
-    a = a+1
-plt.plot(data["freq"], data["shot_noise"], label='shot_noise')
-plt.plot(data["freq"], data["elec_noise"], label='elec_noise')
+# a = 0
+# plt.figure(7)
+# for k in [13, 16, 17, 21, 22]:
+#     plt.plot(data["freq"], data["PSD_phase" + str(k)], label=str(round(power_w[a], 2)) + " uW")
+#     a = a+1
+# plt.plot(data["freq"], data["shot_noise"], label='shot_noise')
+# plt.plot(data["freq"], data["elec_noise"], label='elec_noise')
+#
+# plt.ylim(-150, -30)
+# plt.xlim(1, 1e6)
+# plt.xscale('log')
+#
+# plt.xlabel('Frequency (Hz)')
+# plt.ylabel('PSD (dB)')
+# plt.title("Phase noise")
+# plt.legend(loc='upper right')
 
-plt.xlim(0, 100e3)
-
-plt.xlabel('Frequency (Hz)')
-plt.ylabel('PSD (dB)')
-plt.title("Phase noise")
-plt.legend(loc='upper right')
-
-a=0
-plt.figure(8)
-for k in [14, 15, 18, 19, 23]:
-    plt.plot(data["freq"], data["PSD_amp" + str(k)], label=str(round(power_w[a], 2)) + " uW")
-    a = a+1
-plt.plot(data["freq"], data["shot_noise"], label='shot_noise')
-plt.plot(data["freq"], data["elec_noise"], label='elec_noise')
-
-plt.xlim(0, 100e3)
-
-plt.xlabel('Frequency (Hz)')
-plt.ylabel('PSD (dB)')
-plt.title("Amplitude noise")
-plt.legend(loc='upper right')
+# a=0
+# plt.figure(8)
+# for k in [14, 15, 18, 19, 23]:
+#     plt.plot(data["freq"], data["PSD_amp" + str(k)], label=str(round(power_w[a], 2)) + " uW")
+#     a = a+1
+# plt.plot(data["freq"], data["shot_noise"], label='shot_noise')
+# plt.plot(data["freq"], data["elec_noise"], label='elec_noise')
+#
+# plt.ylim(-150, -30)
+# plt.xlim(1, 1e6)
+# plt.xscale('log')
+#
+# plt.xlabel('Frequency (Hz)')
+# plt.ylabel('PSD (dB)')
+# plt.title("Amplitude noise")
+# plt.legend(loc='upper right')
 
 plt.show()
