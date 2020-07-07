@@ -4,7 +4,7 @@ import numpy as np
 electronical noise, i.e., no light was applied for saving this particular data.'''
 
 '''Read dictionary'''
-pickle_in = open("2d_scan_2mm.pickle", "rb")
+pickle_in = open("2d_scan_5mm.pickle", "rb")
 data2 = pickle.load(pickle_in)
 
 for k in range(28): #indenting this results in a 2D plot of the signal
@@ -27,7 +27,7 @@ data2['TRACE_signal'] = df_temp
 ###########################################################################################################################################
 
 '''SAVE DICTIONARY'''
-pickle_out = open("2d_scan_2mm.pickle2", "wb")
-pickle.dump(data2, pickle_out)
-pickle_out.close()
+# pickle_out = open("2d_scan_5mm.pickle2", "wb")
+# pickle.dump(data2, pickle_out)
+# pickle_out.close()
 ###########################################################################################################################################

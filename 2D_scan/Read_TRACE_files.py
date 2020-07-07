@@ -10,7 +10,7 @@ RBW = 30
 data2 = {}
 '''READ SPECTRUM ANALYZER .CSV FILES'''
 for k in range(29):
-    with open('C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Sensitivity_calculations\\254_4\\19thJul\\2dScan_190719_FG_JB'
+    with open('C:\\Users\\uqfgotar\\Documents\\Magnetometry\\Sensitivity_calculations\\254_4\\7thAug\\2dScan_070819_FG_JB'
               + '\\TRACE' + str("{:02d}".format(k+1)) + '.csv') as a:
         df = csv.reader(a, delimiter=',')
         df_temp = []
@@ -28,7 +28,7 @@ for k in range(29):
 ###########################################################################################################################################
 
 '''SAVE DICTIONARY'''
-# pickle_out = open("2d_scan_2mm.pickle", "wb")
+# pickle_out = open("2d_scan_5mm.pickle", "wb")
 # pickle.dump(data2, pickle_out)
 # pickle_out.close()
 ###########################################################################################################################################

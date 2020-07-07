@@ -22,8 +22,9 @@ fig, ax0 = plt.subplots()
 ax0.set_title('Gain dependence with height for a 2 mm flux conc. (dB)')
 ax0.set_xlabel('Frequency (MHz)')
 ax0.set_ylabel('Height (um)')
+plt.locator_params(axis='x', nbins=5)
 
-c = ax0.pcolor(xx, yy, data2['TRACE_signal'], cmap='hot')
+c = ax0.pcolor(xx, yy, data2['TRACE_signal'], cmap='magma')
 fig.colorbar(c, ax=ax0)
 
 plt.show()
